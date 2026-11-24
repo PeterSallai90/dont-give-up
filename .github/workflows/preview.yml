@@ -1,0 +1,36 @@
+name: Preview
+
+# Publishes a playable build of every pull request from this repository to
+# https://petersallai90.github.io/dont-give-up/pr-preview/pr-<N>/ and removes it when the pull
+# request closes. Pull requests from forks never run here (no write token for foreign code).
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, closed]
+
+concurrency:
+  group: preview-${{ github.event.pull_request.number }}
+  cancel-in-progress: false
+
+permissions: {}
+
+jobs:
+  preview:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-node@v7.1.0
+        with:
+          node-version: "24"
+          cache: npm
+      - if: github.event.action != 'closed'
+        run: npm ci && npm run build
+      - uses: rossjrw/pr-preview-action@v1.8.2
+        with:
+          source-dir: dist
+          preview-branch: gh-pages
+          umbrella-dir: pr-preview
+          action: auto

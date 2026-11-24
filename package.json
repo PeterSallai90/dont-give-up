@@ -1,0 +1,42 @@
+{
+  "name": "dont-give-up",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "description": "Codename Don't Give Up: a story-first choice game for web and mobile.",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "dev": "npm run story && vite --port 5180 --strictPort",
+    "story": "tsx tools/compile-story.ts",
+    "build": "npm run story && vite build",
+    "preview": "vite preview --port 5181 --strictPort",
+    "lint": "eslint . && prettier --check .",
+    "format": "prettier --write .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "check:i18n": "tsx tools/check-i18n.ts",
+    "check:story": "tsx tools/check-story.ts",
+    "check": "npm run lint && npm run typecheck && npm run check:i18n && npm run check:story && npm test"
+  },
+  "dependencies": {
+    "inkjs": "2.4.0",
+    "pixi.js": "8.23.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "@types/node": "24.19.2",
+    "eslint": "10.15.0",
+    "globals": "17.14.0",
+    "prettier": "3.10.1",
+    "tsx": "4.23.15",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.74.0",
+    "vite": "8.3.8",
+    "vitest": "5.1.1"
+  },
+  "allowScripts": {
+    "esbuild@0.28.2": true
+  }
+}

@@ -1,0 +1,13 @@
+# Path rules for actions/labeler: changes to these paths need the product owner (owner gate).
+needs:owner:
+  - changed-files:
+      - any-glob-to-any-file:
+          - CLAUDE.md
+          - .claude/**
+          - .github/workflows/**
+          - .github/labeler.yml
+          - docs/adr/**
+          - docs/decisions.md
+          - docs/vision.md
+          - docs/art-style.md
+          - story/**

@@ -1,0 +1,28 @@
+name: Bug
+description: Something does not work as expected
+title: "[Bug] "
+labels: ["type:bug"]
+body:
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected result
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual result
+    validations:
+      required: true
+  - type: input
+    id: where
+    attributes:
+      label: Where
+      description: Browser or device, language, preview link or commit

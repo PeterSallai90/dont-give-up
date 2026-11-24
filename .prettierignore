@@ -1,0 +1,7 @@
+dist/
+src/generated/
+package-lock.json
+coverage/
+consultants/
+.claude/state/
+*.ink

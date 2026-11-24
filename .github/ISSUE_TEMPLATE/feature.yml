@@ -1,0 +1,40 @@
+name: Feature or story
+description: A feature, story chapter, minigame or improvement
+title: "[Feature] "
+labels: ["type:feature"]
+body:
+  - type: textarea
+    id: story
+    attributes:
+      label: User story
+      description: As a player, I want ... so that ...
+    validations:
+      required: true
+  - type: textarea
+    id: narrative
+    attributes:
+      label: Narrative
+      description: Scenes, choices, consequences, story variables read and written, tags (narrative-designer).
+  - type: textarea
+    id: criteria
+    attributes:
+      label: Acceptance criteria
+      description: Given / When / Then, including at least one edge or failure case.
+  - type: textarea
+    id: out-of-scope
+    attributes:
+      label: Out of scope
+  - type: textarea
+    id: honesty
+    attributes:
+      label: Honesty check
+      description: Confirm no pay pressure, fake urgency, guilt prompts or paywalls (docs/vision.md).
+  - type: textarea
+    id: strings
+    attributes:
+      label: Strings and assets
+      description: New UI string keys (en and hu) and new assets.
+  - type: textarea
+    id: tests
+    attributes:
+      label: Test notes

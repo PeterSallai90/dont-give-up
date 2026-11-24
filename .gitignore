@@ -1,0 +1,19 @@
+node_modules/
+dist/
+coverage/
+src/generated/
+*.log
+.env
+.env.*
+# Capacitor native projects are generated; add them back when an issue decides so.
+android/
+ios/
+# Local AI-team state, previews and consultant notes stay on this PC.
+.claude/state/
+.claude/settings.local.json
+consultants/
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

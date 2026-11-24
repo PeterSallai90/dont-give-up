@@ -1,0 +1,66 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main, develop]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-node@v7.1.0
+        with:
+          node-version: "24"
+          cache: npm
+      - run: npm ci
+      - run: npm run story
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm run check:i18n
+
+  test:
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-node@v7.1.0
+        with:
+          node-version: "24"
+          cache: npm
+      - run: npm ci
+      - run: npm run check:story
+      - run: npm run story
+      - run: npm test
+
+  build:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-node@v7.1.0
+        with:
+          node-version: "24"
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - name: Bundle size
+        run: |
+          echo "### Bundle size" >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          du -sh dist >> "$GITHUB_STEP_SUMMARY"
+          find dist -name '*.js' -exec sh -c 'printf "%s gzip %s bytes\n" "$1" "$(gzip -c "$1" | wc -c)"' _ {} \; >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v7.0.2
+        with:
+          name: web-${{ github.sha }}
+          path: dist
+          retention-days: 7
