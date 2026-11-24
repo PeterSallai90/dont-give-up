@@ -1,7 +1,7 @@
 name: Pages
 
-# Publishes the develop branch to the GitHub Pages site root after every merge. Pull request
-# previews in pr-preview/ are kept.
+# Publishes the develop branch to the GitHub Pages site root after every merge and on a manual
+# run (Actions tab, "Run workflow", develop only). Pull request previews in pr-preview/ are kept.
 on:
   workflow_dispatch:
   push:
@@ -15,6 +15,7 @@ permissions: {}
 
 jobs:
   deploy:
+    if: github.ref == 'refs/heads/develop'
     runs-on: ubuntu-latest
     permissions:
       contents: write
