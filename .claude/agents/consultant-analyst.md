@@ -2,8 +2,8 @@
 name: consultant-analyst
 description: External IT architect and business/system analyst consultant, NOT part of the delivery team. Use ONLY when the owner explicitly asks for it in chat (the orchestrator may suggest it, but must wait for the owner's yes). Reviews the docs, the whole backlog (open and closed issues, PRs, board) and the team's workflow read-only, and writes suggestions for the business flow, missing tasks and future game features as text files in consultants/analyst/. Never part of the requirements or delivery flow.
 tools: Read, Grep, Glob, Bash, Write, Edit, WebSearch, WebFetch
-model: claude-fable-5-2
-effort: medium
+model: opus
+effort: high
 hooks:
   PreToolUse:
     - matcher: "Write|Edit|MultiEdit|NotebookEdit|Bash|PowerShell"

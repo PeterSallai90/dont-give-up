@@ -17,3 +17,5 @@ contradicts a row needs the owner (`needs:decision`). New rows go at the bottom.
 | D10 | 2026-11-24 | Public GitHub repository (PeterSallai90/dont-give-up), develop/main branches, owner gate as in Cozy Aquarium.                      | kickoff chat |
 | D11 | 2026-11-24 | Each agent's model and effort are pinned in its file; the owner may ask for a different effort per task.                           | kickoff chat |
 | D12 | 2026-11-24 | Work is tracked on a GitHub project board.                                                                                         | kickoff chat |
+| D13 | 2026-11-25 | The code is public but All rights reserved; no open-source licence for now (README).                                               | owner chat   |
+| D14 | 2026-11-25 | Consultant agents run on Opus with high effort (Fable was promotional only).                                                       | owner chat   |
