@@ -3,6 +3,7 @@ name: Pages
 # Publishes the develop branch to the GitHub Pages site root after every merge. Pull request
 # previews in pr-preview/ are kept.
 on:
+  workflow_dispatch:
   push:
     branches: [develop]
 
