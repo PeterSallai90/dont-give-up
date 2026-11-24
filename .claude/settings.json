@@ -244,9 +244,7 @@
           {
             "type": "command",
             "command": "py",
-            "args": [
-              "${CLAUDE_PROJECT_DIR}/.claude/hooks/require_review.py"
-            ],
+            "args": ["${CLAUDE_PROJECT_DIR}/.claude/hooks/require_review.py"],
             "timeout": 30
           }
         ]
