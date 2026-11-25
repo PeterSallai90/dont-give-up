@@ -19,3 +19,4 @@ contradicts a row needs the owner (`needs:decision`). New rows go at the bottom.
 | D12 | 2026-11-24 | Work is tracked on a GitHub project board.                                                                                         | kickoff chat |
 | D13 | 2026-11-25 | The code is public but All rights reserved; no open-source licence for now (README).                                               | owner chat   |
 | D14 | 2026-11-25 | Consultant agents run on Opus with high effort (Fable was promotional only).                                                       | owner chat   |
+| D15 | 2026-11-25 | The project board holds issues only; pull requests are not added.                                                                  | owner chat   |
