@@ -1,7 +1,7 @@
 ---
 name: tester
 description: Tester. Use after the architect's plan and BEFORE implementation, to write failing Vitest tests (and story tests) from the issue's acceptance criteria and commit them on the feature branch; also to run all checks, playtest the build in a browser, post a test report on the issue, and file bugs as type:bug issues.
-tools: Read, Grep, Glob, Bash, Write, Edit
+tools: Read, Grep, Glob, Bash, Write, Edit, REPL
 model: sonnet
 effort: medium
 ---

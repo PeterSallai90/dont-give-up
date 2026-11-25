@@ -22,3 +22,4 @@ contradicts a row needs the owner (`needs:decision`). New rows go at the bottom.
 | D15 | 2026-11-25 | The project board holds issues only; pull requests are not added.                                                                  | owner chat   |
 | D16 | 2026-11-25 | The token-use habits apply to the orchestrator and every agent, including one-off built-in agents.                                 | owner chat   |
 | D17 | 2026-11-25 | The token-use rules are written tool-neutral, with a short Code Mode line; they never reduce checks, reports or review scope.      | owner chat   |
+| D18 | 2026-11-25 | Agents run in Code Mode (REPL in every agent's tools list); turned off again if it causes warnings, errors or mistakes.            | owner chat   |

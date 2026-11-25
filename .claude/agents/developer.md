@@ -1,7 +1,7 @@
 ---
 name: developer
 description: Developer. Use after the tester has committed the failing tests, to implement the issue on its feature branch (TypeScript, PixiJS, minigames, UI, story integration, tooling) until all checks pass and the build works; also to fix the problems a code review or CI run reports. Never weakens or deletes the tester's tests.
-tools: Read, Grep, Glob, Bash, Write, Edit
+tools: Read, Grep, Glob, Bash, Write, Edit, REPL
 model: sonnet
 effort: medium
 ---

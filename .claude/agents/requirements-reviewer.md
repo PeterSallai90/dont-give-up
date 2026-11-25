@@ -1,7 +1,7 @@
 ---
 name: requirements-reviewer
 description: Requirements reviewer. Use after product-ba (and narrative-designer, for story issues) have drafted a story, to challenge it, ask questions, find gaps, contradictions, duplicates and story-continuity breaks, and finally run the Definition of Ready. Returns questions for the BAs or a Ready / not Ready verdict. Does not write stories or answer its own questions.
-tools: Read, Grep, Glob, Bash
+tools: Read, Grep, Glob, Bash, REPL
 model: sonnet
 effort: high
 ---

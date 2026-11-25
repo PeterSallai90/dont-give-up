@@ -1,7 +1,7 @@
 ---
 name: product-ba
 description: Product business analyst. Use to turn an idea, bug or backlog row into a user story with player value, scope, acceptance criteria (Given/When/Then) and out of scope; owns minigame fun and the honesty rules (no pay pressure, no dark patterns); answers the requirements reviewer's questions about player value or scope. Not for story writing (narrative-designer), technical plans (architect) or code.
-tools: Read, Grep, Glob, Bash
+tools: Read, Grep, Glob, Bash, REPL
 model: sonnet
 effort: medium
 ---

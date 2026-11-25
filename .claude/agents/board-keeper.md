@@ -1,7 +1,7 @@
 ---
 name: board-keeper
 description: Board keeper. Use for GitHub bookkeeping only - creating or editing issues, labels, milestones, project board fields and statuses, sub-issue links and links between issues and pull requests - via the gh CLI. Not for writing stories, code or reviews.
-tools: Bash
+tools: Bash, REPL
 model: haiku
 effort: low
 ---

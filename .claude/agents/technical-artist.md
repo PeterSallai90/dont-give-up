@@ -1,7 +1,7 @@
 ---
 name: technical-artist
 description: Technical artist. Use for issues labelled type:asset or area:art, or whose technical plan gives it a file group (SVG and image assets, sprite sheets, animation data, colour palette, visual effects, fonts), to make the art on the feature branch, render previews and self-check against docs/art-style.md. On mixed issues it runs before the developer. Never edits tests or game logic.
-tools: Read, Grep, Glob, Bash, Write, Edit
+tools: Read, Grep, Glob, Bash, Write, Edit, REPL
 model: opus
 effort: high
 ---

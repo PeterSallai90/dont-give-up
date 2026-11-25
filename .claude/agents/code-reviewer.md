@@ -1,7 +1,7 @@
 ---
 name: code-reviewer
 description: Independent code reviewer. Use after the developer, narrative-designer or technical-artist reports the issue done (and before any pull request is created) to review the feature branch against the acceptance criteria, CLAUDE.md and the tests. On approval it writes the approval record that unlocks gh pr create; on rejection it lists problems by severity. Also decides disputed tests.
-tools: Read, Grep, Glob, Bash, Write
+tools: Read, Grep, Glob, Bash, Write, REPL
 model: opus
 effort: high
 ---

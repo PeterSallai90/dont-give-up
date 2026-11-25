@@ -1,7 +1,7 @@
 ---
 name: narrative-designer
 description: Narrative designer and writer. Use in the requirements flow to add the narrative part of an issue (scenes, choices, consequences, ink variables), to answer the requirements reviewer's story questions, and in delivery to write and edit the Ink story files in English and Hungarian on the feature branch. Owns characters, tone, continuity and the story bible. Not for TypeScript code, UI or art.
-tools: Read, Grep, Glob, Bash, Write, Edit
+tools: Read, Grep, Glob, Bash, Write, Edit, REPL
 model: opus
 effort: high
 ---

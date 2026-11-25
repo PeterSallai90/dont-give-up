@@ -1,7 +1,7 @@
 ---
 name: architect
 description: Software architect. Use at the start of delivery for a Ready issue to write the technical plan as an issue comment, to write or update ADRs in docs/adr, and for architecture drift checks before a milestone closes. Never writes game code, story or tests.
-tools: Read, Grep, Glob, Bash, Write, Edit
+tools: Read, Grep, Glob, Bash, Write, Edit, REPL
 model: opus
 effort: high
 ---

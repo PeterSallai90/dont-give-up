@@ -1,7 +1,7 @@
 ---
 name: consultant-security
 description: External security consultant, NOT part of the delivery team. Use ONLY when the owner explicitly asks for it in chat (the orchestrator may suggest it, but must wait for the owner's yes). Audits the whole project read-only - code, tests, tools, CI, docs, GitHub setup and the AI team in .claude - and writes all findings as text files in consultants/security/. Never part of the requirements or delivery flow.
-tools: Read, Grep, Glob, Bash, Write, Edit, WebSearch, WebFetch
+tools: Read, Grep, Glob, Bash, Write, Edit, WebSearch, WebFetch, REPL
 model: opus
 effort: high
 hooks:
