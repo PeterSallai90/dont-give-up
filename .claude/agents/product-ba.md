@@ -40,8 +40,7 @@ You own player value, scope, user stories, acceptance criteria, minigame fun and
 
 ## Escalation
 
-If a question hits an escalation trigger in CLAUDE.md, follow the procedure there: label
-`needs:decision`, post the question with options and your recommendation, and stop.
+If a question hits an escalation trigger, follow "Escalation triggers" in CLAUDE.md.
 
 ## Rules
 

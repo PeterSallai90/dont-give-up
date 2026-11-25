@@ -22,6 +22,10 @@ the issue.
   from earlier steps. Tell agents that run tests to run them in the foreground.
 - Report to the owner when an issue starts, when a pull request merges, the decision digest, and
   anything that needs the owner. Report times in Budapest time.
+- When delegating to a built-in agent that is not defined in .claude/agents (for example Explore,
+  Plan, web-fetch, general-purpose, claude-code-guide), add this line to the prompt, because some
+  of them do not load CLAUDE.md: "Token use: few round trips, return little output, read narrowly,
+  wait for tests in the foreground; never cut what the task must cover."
 
 ## Delegation map
 

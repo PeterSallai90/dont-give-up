@@ -95,21 +95,29 @@ A BA that hits a trigger does not decide it: it runs `gh issue edit <N> --add-la
 needs:decision`, posts a comment that states the question and the options (with its
 recommendation), and reports to the orchestrator that the issue is blocked.
 
-## Token use (architect, code-reviewer, developer, narrative-designer, product-ba, requirements-reviewer, technical-artist, tester)
+## Token use (every agent and the orchestrator)
 
-These habits apply to exactly these eight agents; they do not apply to board-keeper, the consultants or the orchestrator. Cost grows with turns times context. These habits cut both. They never change which checks run,
-their pass criteria, or what is reported.
+These habits apply to the orchestrator and to every agent, including one-off agents. Cost grows
+with the number of round trips times the size of the context; these habits cut both. They never
+change which checks run, their pass criteria, what is reported, or what a task must cover: a
+consultant still reviews everything in its scope, and the acceptance criteria, every
+"BA decision:" and the technical plan are always read in full.
 
-- Batch commands: related shell commands with no decision in between go into one Bash call; only
-  commands already allowed, never a new permission entry.
-- Parallel calls: independent reads, greps and `gh` calls go into one message.
-- Log to file: redirect long command output (test runs, builds) to a file in the scratchpad
-  directory and read it with `grep -nE "FAIL|Error|error|warn"` plus `tail`; read the whole log
-  when anything matches or the command exits abnormally. Run tests in the foreground, never as a
-  background job with a wait loop.
-- Read by line range: grep first, then Read with offset and limit; read a whole file only when it
-  is short. Save `gh issue view <N> --comments` once to the scratchpad; the acceptance criteria,
-  every "BA decision:" and the technical plan are always read in full.
+- Few round trips: do each step in as few tool calls as possible. Independent work (reads,
+  searches, `gh` calls) runs together in one call or one message; come back to decide only when
+  the next step depends on a result.
+- Little output: keep long output (test runs, builds, logs, large files) out of the context. Look
+  for failures first (for example `FAIL|Error|error|warn` plus the last lines) and read the whole
+  output only when something matches or the command exits abnormally.
+- Read narrowly: search first, then read only the lines you need; read a whole file only when it is
+  short. Save `gh issue view <N> --comments` once to the scratchpad and reuse it.
+- Wait properly: run tests and builds in the foreground and wait for them to finish; never start
+  them as background jobs with a wait loop.
+- Permissions: use only commands that are already allowed; never add a permission entry to save
+  calls.
+- In Code Mode (one REPL tool that runs scripts): put a whole step, including the sub-steps that
+  depend on each other, into one script; run its independent parts at the same time; keep large
+  results in variables and return only what is needed (failures, counts, a short preview).
 
 ## Lanes
 

@@ -20,3 +20,5 @@ contradicts a row needs the owner (`needs:decision`). New rows go at the bottom.
 | D13 | 2026-11-25 | The code is public but All rights reserved; no open-source licence for now (README).                                               | owner chat   |
 | D14 | 2026-11-25 | Consultant agents run on Opus with high effort (Fable was promotional only).                                                       | owner chat   |
 | D15 | 2026-11-25 | The project board holds issues only; pull requests are not added.                                                                  | owner chat   |
+| D16 | 2026-11-25 | The token-use habits apply to the orchestrator and every agent, including one-off built-in agents.                                 | owner chat   |
+| D17 | 2026-11-25 | The token-use rules are written tool-neutral, with a short Code Mode line; they never reduce checks, reports or review scope.      | owner chat   |
