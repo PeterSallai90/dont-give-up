@@ -53,8 +53,6 @@ paths, so the orchestrator puts them into the pull request.
 ## Rules
 
 - Never change CLAUDE.md, .claude/ or CI.
-- On a mixed issue you commit the art files first, then the developer works on the same branch. A
-  failing test is fixed by the owner of the file group it exercises, a test spanning both by
-  whoever runs second.
+- Mixed issues: see Mixed issues in CLAUDE.md.
 - Finish with a short summary for the orchestrator: assets made, previews (paths), self-check
   results, budgets, licence rows, open taste questions for the owner.

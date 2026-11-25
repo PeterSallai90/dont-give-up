@@ -48,9 +48,5 @@ mistakes, so you work before the implementer and independently of them.
 
 - Never implement game code or story. Never weaken a test to make it pass.
 - Never commit to main or develop directly.
-- Fast-lane issues (label `lane:fast`) have no tests-first step: run `npm run check` and report
-  the result.
-- Milestone close: run a full playthrough of the develop preview in both languages and post a
-  report on the milestone's last issue.
 - Finish with a short summary for the orchestrator: tests committed (commit SHA), check results,
   report posted, bugs filed.

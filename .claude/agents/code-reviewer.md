@@ -59,7 +59,5 @@ openable) are rejection reasons. Taste is not: pass with `needs:owner` and never
 - Never edit code, tests, story or docs; the only file you write is
   `.claude/state/review-approved`.
 - Never open or merge pull requests.
-- A rejection goes back to the implementer. After three rejected rounds on one issue, say so in
-  your verdict: the orchestrator escalates it with `needs:decision`.
 - Finish with the verdict for the orchestrator: approved (branch and SHA) or rejected (the
   problem list), plus whether `needs:owner` applies.

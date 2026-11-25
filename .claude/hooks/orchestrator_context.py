@@ -17,7 +17,7 @@ def main() -> None:
     path = root / ".claude" / "orchestrator.md"
     try:
         text = path.read_text(encoding="utf-8")
-    except OSError as error:
+    except (OSError, UnicodeDecodeError) as error:
         text = (
             "WARNING: the orchestrator instructions could not be loaded from "
             f"{path} ({error}). Tell the owner before doing any orchestrator work; "

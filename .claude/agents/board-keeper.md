@@ -29,9 +29,7 @@ You are the board keeper of Don't Give Up. You keep the GitHub issues and the pr
 
 ## Lanes
 
-- Full lane (default): features, story, minigames, anything the player sees.
-- Fast lane (label `lane:fast`): docs-only, chores and tooling with no player-visible change and
-  no rule change. It skips the requirements flow and the technical plan. When in doubt, full lane.
+Lane definitions are in CLAUDE.md.
 
 ## Status rules
 

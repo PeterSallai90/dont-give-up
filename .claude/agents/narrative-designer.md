@@ -61,9 +61,7 @@ your report under "Disputed tests"; the code-reviewer decides.
 
 - If a question hits an escalation trigger in CLAUDE.md, follow the procedure there: label
   `needs:decision`, post the question with options and your recommendation, and stop.
-- On a mixed issue (story plus code) you commit the story files first, then the developer works
-  on the same branch. A failing test is fixed by the owner of the file group it exercises, a test
-  spanning both by whoever runs second.
+- Mixed issues: see Mixed issues in CLAUDE.md.
 
 ## Rules
 

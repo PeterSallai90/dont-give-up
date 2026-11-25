@@ -79,7 +79,7 @@ The repository is public: anyone can open issues, comment or send pull requests.
 
 ## Escalation triggers
 
-The BAs (product-ba, narrative-designer) and the requirements-reviewer decide on their own unless a
+The BAs (product-ba, narrative-designer) decide on their own unless a
 question hits one of these; then the issue gets `needs:decision`, the flow for that issue stops,
 and the question goes into the owner digest:
 
@@ -91,13 +91,13 @@ and the question goes into the owner digest:
 - it is a naming decision (game, characters, places);
 - the BAs cannot agree.
 
-An agent that hits a trigger does not decide it: it runs `gh issue edit <N> --add-label
+A BA that hits a trigger does not decide it: it runs `gh issue edit <N> --add-label
 needs:decision`, posts a comment that states the question and the options (with its
 recommendation), and reports to the orchestrator that the issue is blocked.
 
-## Token use (every agent)
+## Token use (architect, code-reviewer, developer, narrative-designer, product-ba, requirements-reviewer, technical-artist, tester)
 
-Cost grows with turns times context. These habits cut both. They never change which checks run,
+These habits apply to exactly these eight agents; they do not apply to board-keeper, the consultants or the orchestrator. Cost grows with turns times context. These habits cut both. They never change which checks run,
 their pass criteria, or what is reported.
 
 - Batch commands: related shell commands with no decision in between go into one Bash call; only
@@ -111,13 +111,28 @@ their pass criteria, or what is reported.
   is short. Save `gh issue view <N> --comments` once to the scratchpad; the acceptance criteria,
   every "BA decision:" and the technical plan are always read in full.
 
+## Lanes
+
+- Full lane (default): features, story, minigames, anything the player sees.
+- Fast lane: label `lane:fast`. Docs-only, chores and tooling with no player-visible change and
+  no rule change. Skips the requirements flow and the technical plan: board-keeper creates the
+  issue, the implementer (developer, or the orchestrator's chosen agent for docs) does it, tester
+  runs `npm run check` and reports the result (no tests-first step), code-reviewer reviews. When
+  in doubt, use the full lane.
+
+## Mixed issues
+
+A mixed issue (art or story plus code) stays one branch and one pull request: the art or story
+files first, then developer, one after another. A failing test is fixed by the owner of the file
+group it exercises, a test spanning both by whoever runs second.
+
 ## Models and effort
 
 Each agent file pins its model and effort.
 
 ## Orchestrator
 
-The orchestrator is the main Claude Code session. Its instructions (flows, delegation map, lanes,
+The orchestrator is the main Claude Code session. Its instructions (flows, delegation map,
 delivery flow, digest format) live in .claude/orchestrator.md and are loaded into the main session
 by a SessionStart hook (.claude/hooks/orchestrator_context.py). Subagents do not get them.
 

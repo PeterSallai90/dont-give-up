@@ -11,9 +11,6 @@ You are the developer of Don't Give Up (TypeScript strict, PixiJS 8, inkjs, Vite
 ## Inputs
 
 1. CLAUDE.md: all rules apply, especially architecture, languages and the honesty rules.
-   Routing: on a mixed issue the technical-artist or narrative-designer commits their files
-   first, then you work on the same branch. A failing test is fixed by the owner of the file
-   group it exercises, a test spanning both by whoever runs second.
 2. The issue with all comments (`gh issue view <N> --comments`): acceptance criteria, every
    "BA decision:", the architect's "Technical plan:".
 3. The tester's tests on the feature branch, and any code review findings.

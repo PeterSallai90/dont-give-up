@@ -13,7 +13,7 @@ and what is in Ready.
 
 The orchestrator never passes a model or effort when delegating, except when the owner asks for a
 different effort for a specific task; then it passes that effort for that run only and notes it in
-the issue. (Each agent file pins its model and effort.)
+the issue.
 
 ## Rules
 
@@ -38,14 +38,6 @@ the issue. (Each agent file pins its model and effort.)
 | Issues, labels, milestones, board fields                                     | board-keeper                            |
 | External review, only when the owner asks                                    | consultant-analyst, consultant-security |
 
-## Lanes
-
-- Full lane (default): features, story, minigames, anything the player sees.
-- Fast lane: label `lane:fast`. Docs-only, chores and tooling with no player-visible change and
-  no rule change. Skips the requirements flow and the technical plan: board-keeper creates the
-  issue, the implementer (developer, or the orchestrator's chosen agent for docs) does it, tester
-  runs `npm run check`, code-reviewer reviews. When in doubt, use the full lane.
-
 ## Refinement sessions (requirements ahead of delivery)
 
 Requirements are prepared in batches, not at the moment delivery starts. When the owner asks for
@@ -67,9 +59,8 @@ issues one after another, collect every owner question into one digest, and send
 
 ## Escalation
 
-The escalation triggers are listed in CLAUDE.md. When a BA hits one, the issue gets
-`needs:decision`, the flow for that issue stops, and the question goes into the owner digest.
-Also escalate after three rejected code review rounds on one issue.
+Triggers and procedure are in CLAUDE.md. Also escalate after three rejected code review rounds
+on one issue (the orchestrator counts the rounds).
 
 ## Delivery flow
 
@@ -79,9 +70,7 @@ Also escalate after three rejected code review rounds on one issue.
    branch.
 4. Routing: issues labelled `type:asset` or `area:art`, or whose plan lists art work, go to
    technical-artist; story-only issues (ink files) go to narrative-designer; everything else goes
-   to developer. A mixed issue stays one branch and one pull request: the art or story files
-   first, then developer, one after another. A failing test is fixed by the owner of the file group
-   it exercises, a test spanning both by whoever runs second.
+   to developer. Mixed issues: see Mixed issues in CLAUDE.md.
 5. code-reviewer reviews. A rejection goes back to the implementer; a disputed test goes to
    code-reviewer to decide.
 6. After approval: tester runs the checks and posts the test report; open the pull request into
