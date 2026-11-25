@@ -33,3 +33,11 @@ C:\Users\peter\.claude-personal). Start it with that configuration, never with t
 `~/.claude` one, which belongs to another setup. Agent run statistics: the local hook in
 .claude/settings.local.json logs runs to .claude/state/agent-runs.jsonl; report with
 `py -I C:/Users/peter/.claude-personal/hooks/agent_stats.py report C:/Dev/dont-give-up`.
+
+## Code Mode (experimental)
+
+Every agent in .claude/agents lists REPL in its tools, so it works in Code Mode when that is on.
+Code Mode is on only when the owner's environment has CLAUDE_CODE_EXPERIMENTAL_CODE_MODE=1 (user
+settings or shell; project settings ignore it) and Claude Code is 2.1.323 or later. Without it,
+agents use their normal tools. To turn it off for agents, remove REPL from the tools lines
+(decision D18).

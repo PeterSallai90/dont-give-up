@@ -14,4 +14,4 @@
 | Story check           | `npm run check:story`: compiles every language, compares their structure and plays every path.                    |
 | Preview               | The web build of a pull request or of develop, published on GitHub Pages for playtesting.                         |
 | Owner                 | The product owner (PeterSallai90). Decides scope, look and feel, story beats, naming, release.                    |
-| Full lane / fast lane | The two delivery processes in CLAUDE.md.                                                                          |
+| Full lane / fast lane | The two delivery processes (Lanes in CLAUDE.md).                                                                  |
