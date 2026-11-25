@@ -110,7 +110,8 @@ consultant still reviews everything in its scope, and the acceptance criteria, e
   for failures first (for example `FAIL|Error|error|warn` plus the last lines) and read the whole
   output only when something matches or the command exits abnormally.
 - Read narrowly: search first, then read only the lines you need; read a whole file only when it is
-  short. Save `gh issue view <N> --comments` once to the scratchpad and reuse it.
+  short. Read `gh issue view <N> --comments` once and reuse it; save it to the scratchpad where
+  your tools allow it.
 - Wait properly: run tests and builds in the foreground and wait for them to finish; never start
   them as background jobs with a wait loop.
 - Permissions: use only commands that are already allowed; never add a permission entry to save
