@@ -16,7 +16,7 @@ they do not clash with other local projects.
 - Repository: https://github.com/PeterSallai90/dont-give-up (public). Default branch: develop.
 - main and develop are protected by rulesets: pull requests only, linear history, required checks
   `lint`, `test`, `build` and `owner-gate`.
-- Project board: "Don't Give Up" (see the number with `gh project list --owner @me`).
+- Project board: "Don't Give Up", number 4 (https://github.com/users/PeterSallai90/projects/4). Holds issues only (D15).
 - Previews: GitHub Pages from the `gh-pages` branch; develop at the site root, pull requests under
   `pr-preview/pr-<N>/`.
 
