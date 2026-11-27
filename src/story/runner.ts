@@ -1,11 +1,9 @@
 import { Story } from "inkjs";
+import { advance, MinigameTagError, type StoryLine } from "./advance";
 import { isBand, type Band } from "./bands";
 import { parseMinigameTag } from "./minigame-tag";
 
-export interface StoryLine {
-  text: string;
-  tags: string[];
-}
+export type { StoryLine } from "./advance";
 
 export interface StoryStep {
   /** Lines produced since the last choice, each with its own tags. */
@@ -39,39 +37,24 @@ export class StoryRunner {
     return this.story.variablesState.GlobalVariableExistsWithName(`mg_${id}`);
   }
 
-  /**
-   * Reads one line without inkjs look-ahead. Continue() runs on past the end of a line to look
-   * for glue and keeps that evaluated content when it prints no text, so a band branch could be
-   * decided before the band is written.
-   */
-  private continueLine(): StoryLine {
-    const story = this.story;
-    story.state.didSafeExit = false;
-    story.state.ResetOutput();
-    do {
-      story.ContinueSingleStep();
-    } while (!story.state.outputStreamEndsInNewline && story.canContinue);
-    if (story.hasError) throw new Error(story.currentErrors?.join("; ") ?? "ink runtime error");
-    return { text: (story.currentText ?? "").trim(), tags: [...(story.currentTags ?? [])] };
-  }
-
   next(): StoryStep {
     if (this.failure) throw this.failure;
     if (this.pending !== null) throw new Error(`minigame pending: ${this.pending}`);
-    const lines: StoryLine[] = [];
-    while (this.story.canContinue) {
-      const { text, tags } = this.continueLine();
-      if (text || tags.length > 0) lines.push({ text, tags });
-      const tag = parseMinigameTag(tags);
-      if (tag.kind === "error") this.fail(tag.message);
-      if (tag.kind === "trigger") {
-        if (!this.hasMinigameVariable(tag.id)) {
-          this.fail(`minigame "${tag.id}" has no ink variable mg_${tag.id}`);
-        }
-        this.pending = tag.id;
-        const checkpoint = this.story.state.ToJson();
-        return { lines, choices: [], ended: false, minigame: tag.id, checkpoint };
+    let result;
+    try {
+      result = advance(this.story);
+    } catch (e) {
+      if (e instanceof MinigameTagError) this.fail(e.message);
+      throw e;
+    }
+    const { lines, stop } = result;
+    if (stop.kind === "trigger") {
+      if (!this.hasMinigameVariable(stop.id)) {
+        this.fail(`minigame "${stop.id}" has no ink variable mg_${stop.id}`);
       }
+      this.pending = stop.id;
+      const checkpoint = this.story.state.ToJson();
+      return { lines, choices: [], ended: false, minigame: stop.id, checkpoint };
     }
     const choices = this.story.currentChoices.map((c) => ({ index: c.index, text: c.text }));
     return { lines, choices, ended: !this.story.canContinue && choices.length === 0 };
