@@ -5,8 +5,9 @@ first refinement session.
 
 ## The game in one paragraph
 
-A mother and her children lose their home in the middle of winter and end up in a ruined old
-manor. The player helps the family survive the winter and slowly turn the manor into a home.
+In the middle of winter, a mother and her two children survive a cart crash in a snowy wood and
+wake up with no memory of their past; they find their way to a ruined old manor. The player helps
+the family survive the winter and slowly turn the manor into a home.
 At every step the player chooses how to help, and the choices change what happens: who the family
 trusts, what they keep, what they lose, and how the story ends. Some choices lead into short
 minigames (keep the fire alive, find firewood, fix the roof, cook from what is left); how well the
