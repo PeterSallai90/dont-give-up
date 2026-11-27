@@ -477,3 +477,35 @@ Rested.
     expect(problems).toEqual([]);
   });
 });
+
+describe("a labelled sticky choice read in a later knot", () => {
+  const LATER = `
+VAR mg_fire = ""
+-> menu
+=== menu ===
++ (rested) [Rest] Resting.
+  -> menu
++ [Leave] -> out
+=== out ===
+{menu.rested: -> bonus}
+Plain end.
+-> END
+=== bonus ===
+Bonus end.
+-> END
+`;
+
+  it("stateKey at the menu differs before and after one rest", () => {
+    const s = story(LATER);
+    advance(s);
+    const before = stateKey(s.state.ToJson());
+    s.ChooseChoiceIndex(0);
+    advance(s);
+    const after = stateKey(s.state.ToJson());
+    expect(after).not.toBe(before);
+  });
+
+  it("the explorer reaches the bonus knot", () => {
+    expect(explore(LATER).problems).toEqual([]);
+  });
+});
