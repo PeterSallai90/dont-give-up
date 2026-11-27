@@ -3,6 +3,7 @@ import { SaveFlow, type SaveFlowDeps } from "../src/game/save-flow";
 import { SaveStore } from "../src/game/save-store";
 import type { Language } from "../src/i18n";
 import { compileInk } from "./helpers/ink-compile";
+import { StoryRunner } from "../src/story/runner";
 import { StubStorage } from "./helpers/storage-stubs";
 
 const KEY = "dontgiveup.save.1:/dont-give-up/";
@@ -148,18 +149,16 @@ interface Stored {
   ink: string;
 }
 
-interface InkDoc {
-  variablesState: Record<string, unknown>;
-}
-
 async function stored(r: Rig): Promise<Stored | null> {
   const raw = await r.storage.inner.get(KEY);
   return raw === null ? null : (JSON.parse(raw) as Stored);
 }
 
-async function storedVars(r: Rig): Promise<Record<string, unknown>> {
+async function storedVar(r: Rig, name: string): Promise<unknown> {
   const save = await stored(r);
-  return (JSON.parse(save?.ink ?? "{}") as InkDoc).variablesState;
+  const fresh = new StoryRunner(compileInk(MAIN_EN));
+  fresh.restore(save?.ink ?? "", "fire");
+  return fresh.getVariable(name);
 }
 
 const texts = (step: { lines: { text: string }[] }): string[] => step.lines.map((l) => l.text);
@@ -216,7 +215,7 @@ describe("AC 2: written before the round", () => {
     const r = rig(stories(MAIN_EN));
     const flow = await SaveFlow.newGame(r.deps, "en", "normal");
     await flow.next();
-    expect((await storedVars(r)).mg_fire).toBe("");
+    expect(await storedVar(r, "mg_fire")).toBe("");
   });
 });
 
@@ -273,7 +272,7 @@ describe("AC 6: band written only on accept", () => {
     await (await SaveFlow.newGame(r1.deps, "en", "normal")).next();
     const { flow } = await resumed(reboot(r1, stories(MAIN_EN)));
     await expect(flow.next()).rejects.toThrow();
-    expect((await storedVars(r1)).mg_fire).toBe("");
+    expect(await storedVar(r1, "mg_fire")).toBe("");
   });
 
   it("the band chosen after the resume is what the story reads", async () => {
@@ -580,7 +579,7 @@ describe("AC 17: band survives a save", () => {
     await flow.next();
     await flow.accept("good");
     await flow.saveNow();
-    expect((await storedVars(r)).mg_fire).toBe("good");
+    expect(await storedVar(r, "mg_fire")).toBe("good");
   });
 
   it("saveNow at the trigger keeps the pending id and the resume works", async () => {

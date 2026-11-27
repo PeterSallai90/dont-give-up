@@ -352,21 +352,24 @@ describe("AC 8: checkpoint and restore", () => {
 });
 
 describe("snapshot (AC 17 of #16)", () => {
-  type Doc = { variablesState: Record<string, unknown> };
-  const vars = (json: string): Record<string, unknown> => (JSON.parse(json) as Doc).variablesState;
+  const readVar = (json: string, name: string): unknown => {
+    const fresh = runnerFromInk(FIRE);
+    fresh.restore(json, "fire");
+    return fresh.getVariable(name);
+  };
 
   it("a snapshot taken right after completeMinigame holds the band", () => {
     const r = runnerFromInk(FIRE);
     r.next();
     r.completeMinigame("good");
-    expect(vars(r.snapshot()).mg_fire).toBe("good");
+    expect(readVar(r.snapshot(), "mg_fire")).toBe("good");
   });
 
   it("a variable written behind an open look-ahead survives in the snapshot", () => {
     const r = runnerFromInk(FIRE);
     r.next();
     r.setVariable("mg_patch", "fair");
-    expect(vars(r.snapshot()).mg_patch).toBe("fair");
+    expect(readVar(r.snapshot(), "mg_patch")).toBe("fair");
   });
 
   it("a snapshot at the trigger equals the step checkpoint", () => {
