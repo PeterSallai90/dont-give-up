@@ -41,9 +41,24 @@ function compilerOptions(
   );
 }
 
+let lastReads: ReadonlySet<string> = new Set();
+
+/** Container paths the story reads a visit count of ("CNT?" in the compiled story). */
+export function countReadTargets(story: Story): Set<string> {
+  const json = story.ToJson() ?? "";
+  return new Set([...json.matchAll(/"CNT\?":"([^"]+)"/g)].map((m) => m[1] as string));
+}
+
+/** Count-read targets of the story compiled last: the default of stateKey in unit tests. */
+export function lastCompiledReads(): ReadonlySet<string> {
+  return lastReads;
+}
+
 function compile(source: string, options: CompilerOptions, errors: string[]): Story | null {
   try {
-    return new Compiler(source, options).Compile();
+    const story = new Compiler(source, options).Compile();
+    lastReads = countReadTargets(story);
+    return story;
   } catch (err) {
     errors.push(String(err));
     return null;

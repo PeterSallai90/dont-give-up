@@ -2,7 +2,7 @@ import { createHash } from "node:crypto";
 import type { Story } from "inkjs";
 import { advance, type Stop, type StoryLine } from "../src/story/advance";
 import { BANDS } from "../src/story/bands";
-import { containerNames, variableNames } from "./ink";
+import { containerNames, countReadTargets, lastCompiledReads, variableNames } from "./ink";
 
 /** Cap on explored states (segments) per language. */
 export const MAX_PATHS = 20000;
@@ -60,7 +60,10 @@ function canonical(value: Json): string {
  * nothing it cannot (turn counters, seeds, raw thread numbers, old output). Depends on the state
  * layout of inkjs 2.4.0 (pinned); the stateKey tests are the canary.
  */
-export function stateKey(stateJson: string): string {
+export function stateKey(
+  stateJson: string,
+  reads: ReadonlySet<string> = lastCompiledReads(),
+): string {
   const state = JSON.parse(stateJson) as Record<string, Json>;
   const ids = new Map<number, number>();
   const id = (n: Json): number => {
@@ -111,16 +114,21 @@ export function stateKey(stateJson: string): string {
       choiceThreads,
     } as Json;
   }
-  // A choice that is offered now and has been visited is a sticky one (inkjs hides a visited
-  // once-only choice), and nothing reads the count of its target, so its visit is not part of the
-  // key. This lets a repeatable menu merge with itself; a once-only visit stays in the key.
+  // The visit of an offered choice target (c-N) is left out of the key when the story never reads
+  // its count (no "CNT?" on it, which is how a label is compiled): inkjs hides a visited once-only
+  // choice, so an offered visited one is sticky. This lets a repeatable menu merge with itself. A
+  // target the story reads, by label, stays in the key. Without "reads", the story compiled last
+  // by tools/ink.ts is used (unit tests); exploreStories passes the reads of its own story.
   const offered = new Set<string>();
   for (const flowJson of Object.values((state.flows ?? {}) as Record<string, Json>)) {
     const choices = ((flowJson as Record<string, Json>).currentChoices ?? []) as Record<
       string,
       Json
     >[];
-    for (const c of choices) offered.add(String(c.targetPath));
+    for (const c of choices) {
+      const target = String(c.targetPath);
+      if (/(^|\.)c-\d+$/.test(target) && !reads.has(target)) offered.add(target);
+    }
   }
   const visited = Object.entries((state.visitCounts ?? {}) as Record<string, Json>)
     .filter(([path, count]) => Number(count) > 0 && !offered.has(path))
@@ -178,8 +186,9 @@ export function exploreStories(
     for (const name of variableNames(story)) {
       if (name.startsWith("mg_")) initialMg.set(name, story.variablesState.$(name));
     }
+    const reads = countReadTargets(story);
     const seen = new Set<string>();
-    if (prune) seen.add(stateKey(initial));
+    if (prune) seen.add(stateKey(initial, reads));
     const stack: Item[] = [{ state: initial, trail: [] }];
     const entry: LangStats = {
       lang,
@@ -192,7 +201,7 @@ export function exploreStories(
     const push = (state: string, trail: string[], fork = false): void => {
       // A band write is never merged, so every "id:band" trail that fails is reported.
       if (prune && !fork) {
-        const key = stateKey(state);
+        const key = stateKey(state, reads);
         if (seen.has(key)) {
           entry.pruned++;
           return;
