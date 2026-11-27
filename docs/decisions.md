@@ -23,3 +23,10 @@ contradicts a row needs the owner (`needs:decision`). New rows go at the bottom.
 | D16 | 2026-11-25 | The token-use habits apply to the orchestrator and every agent, including one-off built-in agents.                                 | owner chat   |
 | D17 | 2026-11-25 | The token-use rules are written tool-neutral, with a short Code Mode line; they never reduce checks, reports or review scope.      | owner chat   |
 | D18 | 2026-11-25 | Agents run in Code Mode (REPL in every agent's tools list); turned off again if it causes warnings, errors or mistakes.            | owner chat   |
+| D19 | 2026-11-26 | Premise: a cart crashes in a winter wood, the family loses its memory, the carter unties the horse and flees; no home was lost.    | owner, #11   |
+| D20 | 2026-11-26 | Milestones: M1 is phase 0 only (crash to the Lark Hill gate, intro, game modes, optional Patch); the first manor night starts M2.  | owner, #11   |
+| D21 | 2026-11-26 | Game modes Easy and Normal: picked at a new game, changeable at any time in settings (next minigame on); never tied to payment.    | owner, #11   |
+| D22 | 2026-11-26 | Four endings, checked at the thaw, first match wins: Together, Home, Shelter, Moving on (docs/narrative/story-bible.md).           | owner, #11   |
+| D23 | 2026-11-26 | Dog: adoption optional, `dog` is none or ours, two chances (M1 cabin, M2 courtyard); Patch never dies, leaves or blocks the story. | owner, #11   |
+| D24 | 2026-11-27 | No skip or dismiss for minigames or choices; a mid-minigame exit resumes at its trigger; tutorial-only cost hints; no blame lines. | owner, #11   |
+| D25 | 2026-11-27 | The heir is Miss Agnes (HU Ágnes; addressed as Ágnes néni), an elderly lady, the last of the Lark Hill family.                     | owner, #11   |
