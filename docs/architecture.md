@@ -8,7 +8,7 @@ The living technical description. ADRs in docs/adr record the decisions behind i
 story/<lang>/*.ink        Story content (narrative-designer). Same structure in every language.
 src/story/                Story runner: the only code that talks to inkjs.
 src/game/      (planned)  Game flow: scenes, choices, saves; reads tags from the story.
-src/minigames/ (planned)  One folder per minigame: logic module + Pixi view.
+src/minigames/              One folder per minigame: logic module + Pixi view.
 src/ui/        (planned)  Pixi UI components (buttons, text boxes, menus).
 src/i18n/                 UI strings per language (en.json, hu.json) and t().
 src/platform/  (planned)  Saves, haptics, store and other platform services (web / Capacitor).
@@ -30,6 +30,14 @@ tests/                    Vitest tests.
 A minigame receives a typed input (from a tag and variables) and resolves a typed result with at
 least a score band (`poor | fair | good`). The game writes the result into ink variables and
 continues the story. A minigame can always be finished; it never blocks progress.
+
+A minigame module implements `play(input, mode, ready)` and resolves a `MinigameResult` (M1: the
+band). It calls `ready()` once when it can accept play. A session (src/minigames/session.ts) runs
+the rounds: Normal offers continue, Easy offers retry and continue; there is no skip. A round that
+cannot run (no module, a throw, no ready within 10 s, an invalid band) is restarted once; after two
+failed rounds in a row the session writes the last band shown in this session, or fair when none
+was shown (D26), with no message. The session calls one completion sink; the game writes the band
+to ink through the story runner.
 
 ## Languages
 

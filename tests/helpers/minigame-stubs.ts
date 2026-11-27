@@ -104,6 +104,6 @@ export function stubInput(id: MinigameId): MinigameInput {
 }
 
 /** Let queued microtasks (restarts, promise handlers) run; fake timers stay in control. */
-export function flush(): Promise<void> {
-  return vi.advanceTimersByTimeAsync(0);
+export async function flush(): Promise<void> {
+  await vi.advanceTimersByTimeAsync(0);
 }
