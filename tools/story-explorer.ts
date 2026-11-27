@@ -147,6 +147,14 @@ function snapshotOf(story: Story): string {
   return story.state.ToJson();
 }
 
+function visitCount(story: Story, path: string): number {
+  try {
+    return story.state.VisitCountAtPathString(path) ?? 0;
+  } catch {
+    return 0;
+  }
+}
+
 function currentKnot(story: Story): string {
   const path = story.state.currentPathString ?? story.state.previousPointer.path?.toString() ?? "";
   return path.split(/[.\d]/)[0] || "(unknown)";
@@ -176,6 +184,8 @@ export function exploreStories(
       problems.add(`[${lang}] ${message}${trail.length ? ` (trail: ${trail.join(" > ")})` : ""}`);
     };
     const knots = containerNames(story).filter((n) => !n.includes("."));
+    const stitches = containerNames(story).filter((n) => n.includes("."));
+    const reachedStitches = new Set<string>();
     const reached = new Set<string>();
     const initial = snapshotOf(story);
     const initialMg = new Map<string, unknown>();
@@ -242,6 +252,10 @@ export function exploreStories(
         add(failure instanceof Error ? failure.message : String(failure), trail);
         continue;
       }
+      for (const stitch of stitches) {
+        if (!reachedStitches.has(stitch) && visitCount(story, stitch) > 0)
+          reachedStitches.add(stitch);
+      }
       options.onSegment?.({ lang, trail, lines: result.lines, stop: result.stop });
       const stop = result.stop;
       if (stop.kind === "trigger") {
@@ -285,6 +299,13 @@ export function exploreStories(
         ? `not reached, coverage partial: ${entry.partial}`
         : "not reached, all paths explored";
       problems.add(`[${lang}] knots never reached: ${missing.join(", ")} (${why})`);
+    }
+    const missingStitches = stitches.filter((s) => !reachedStitches.has(s));
+    if (missingStitches.length > 0) {
+      const why = entry.partial
+        ? `not reached, coverage partial: ${entry.partial}`
+        : "not reached, all paths explored";
+      problems.add(`[${lang}] stitches never reached: ${missingStitches.join(", ")} (${why})`);
     }
     stats.push(entry);
   }

@@ -167,6 +167,41 @@ describe("AC 4: every knot behind a band is reached", () => {
   });
 });
 
+describe("stitches never reached (#13 AC 12)", () => {
+  const WITH_STITCH = `
+-> lodge
+=== lodge ===
+Hello.
+-> END
+= side
+Nobody comes here.
+-> END
+`;
+
+  it("a stitch that nothing diverts to is reported as stitches never reached", () => {
+    const { problems } = explore(WITH_STITCH);
+    expect(
+      problems.some(
+        (p) =>
+          p.startsWith("[en] ") && p.includes("stitches never reached") && p.includes("lodge.side"),
+      ),
+    ).toBe(true);
+  });
+
+  it("a stitch that a divert reaches is not reported", () => {
+    const { problems } = explore(WITH_STITCH.replace("Hello.\n-> END", "Hello.\n-> lodge.side"));
+    expect(problems).toEqual([]);
+  });
+
+  it("an unreached knot is still reported as knots never reached, not as a stitch", () => {
+    const { problems } = explore(FIRE + "=== orphan ===\nNobody comes.\n-> END\n");
+    expect(problems.some((p) => p.includes("knots never reached") && p.includes("orphan"))).toBe(
+      true,
+    );
+    expect(problems.some((p) => p.includes("stitches never reached"))).toBe(false);
+  });
+});
+
 describe("AC 5: the empty band", () => {
   it('a branch that needs mg_fire == "" after the trigger is dead and reported', () => {
     const { problems } = explore(`

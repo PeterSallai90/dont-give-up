@@ -47,13 +47,25 @@ const lines = (s: { lines: { text: string }[] }): string[] => s.lines.map((l) =>
 
 describe("StoryRunner on the real story", () => {
   it("offers the first choices and changes a variable when one is chosen", () => {
-    const r = runner("en");
-    const first = r.next();
-    expect(first.choices.length).toBeGreaterThan(1);
-    const warmthBefore = Number(r.getVariable("warmth"));
+    for (const lang of ["en", "hu"]) {
+      const r = runner(lang);
+      const first = r.next();
+      expect(first.choices.length).toBeGreaterThan(1);
+      const names = ["warmth", "food", "hope", "trust", "memory", "camp", "trunk"];
+      const before = names.map((n) => r.getVariable(n));
+      r.choose(0);
+      r.next();
+      expect(names.map((n) => r.getVariable(n))).not.toEqual(before);
+    }
+  });
+
+  it("a choice that raises a variable shows in getVariable (inline fixture)", () => {
+    const r = runnerFromInk("VAR warmth = 2\n+ [Burn it]\n  ~ warmth = warmth + 2\n  -> END\n");
+    r.next();
+    const before = Number(r.getVariable("warmth"));
     r.choose(0);
     r.next();
-    expect(Number(r.getVariable("warmth"))).toBeGreaterThan(warmthBefore);
+    expect(Number(r.getVariable("warmth"))).toBeGreaterThan(before);
   });
 });
 

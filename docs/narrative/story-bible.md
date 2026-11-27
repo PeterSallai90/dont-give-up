@@ -9,7 +9,7 @@ the same pull request.
 Contents: Premise, Tone, Names, Characters, Places and scene values, Timeline and endings, Memory,
 Story variables, Reachability, Phase 0 outline (M1), Minigame hooks, Minigame and choice contract,
 Viewpoint, The dog, Game modes, Intro storyboard, Miss Agnes, old John and the lodge, Phases 1 to 5
-outline (M2 and later), Tags, Honesty check, Placeholder story, Follow-up issues, Open questions,
+outline (M2 and later), Tags, Honesty check, Ink knot map, Follow-up issues, Open questions,
 Change log.
 
 ## Premise
@@ -76,6 +76,8 @@ Translation notes (Hungarian):
   family in the formal plural and calls people „kedvesem” as a warm, old-fashioned touch.
 - Adapt jokes and idioms instead of translating them word for word (for example, Dani's drip is
   "Gerald" in English and „Géza” in Hungarian).
+- Lodge furniture (#13): the bench chest is „a padláda” („a padládán”, „a padládában”), the
+  woodbox „a fásláda”, the cart's trunk „az utazóláda”. „Pádláda” is not a word.
 
 ## Characters
 
@@ -289,10 +291,11 @@ from outside.
 - **What is lost:** everything before the crash: where they came from, where they were going, why,
   and who they were to anyone else.
 - **What they re-learn (facts from outside):** the luggage tag ("Lark Hill"), the lodge map and
-  guest book, old John (where he picked them up and where they asked to go), Millbrook's gossip
+  guest book (where the big house is, and that someone once loved the lodge; neither names anyone,
+  see "The lodge" under Miss Agnes, old John and the lodge), old John (where he picked them up and where they asked to go), Millbrook's gossip
   about Miss Agnes's notice, and at the thaw Miss Agnes herself (who hired Mira, and that they came
   by train).
-- **Fragments (from inside):** Dani's half-song and smells; Lili's school; Mira's farm and a red cow,
+- **Fragments (from inside):** Dani's half-song and smells; Lili's school (first in the loft, where she reads joined-up writing as easily as print and knows somebody taught her); Mira's farm and a red cow,
   which slip out in a bedtime story.
 - **Sources of `memory`** (each counts once, maximum 5): the trunk (the cart night or the walk back,
   never both), the loft and its guest book, the books bedtime (phase 1, only if `burned` = "books"),
@@ -490,6 +493,14 @@ leave one undone (owner Q12). Each later day has 1 slot. The menu (EN / HU):
 | Explore the loft / A padlás felfedezése (`cabin_loft`)        | Lili              | The guest book, last entry in Miss Agnes's own hand: `memory` +1, `trust` +1      | Once                           |
 | Rest and play / Pihenés és játék                              | Dani              | `hope` +2, and `dog_care` +1 if Patch is theirs                                   | Repeatable                     |
 
+Tutorial tag lines in the ink (#13): `slot_costs` on the first menu prompt "Mira rolls up her
+sleeves. Where to begin?" / „Mira feltűri az ingujját. Hol kezdje?” (later prompts: "Mira looks
+around. What next?" / „Mira körülnéz. Mi legyen a következő?”); `band_result` on "Mira brushes off
+her hands." / „Mira leporolja a kezét.”, right after the first band line; `night_cost` on the
+night's opening line "Evening comes to the lodge." / „Beesteledik a vadászlakban.” Each sits at the
+end of a plain text line outside any choice or conditional, once, on the same line in story/hu, and
+never on a line with `# minigame:`.
+
 ### 4. The first evening: the first dog chance (`cabin`, at the woodshed door)
 
 "A thin dog watches from under the woodshed. One eye sits in a dark patch." / „Egy sovány kutya
@@ -526,8 +537,9 @@ He's looking at it." / „Anya, megkaphatja a kenyérhéjamat? Nagyon nézi.”
     wearing four!" / HU: Lili: „Csipkebogyó vacsorára, a plafon helyén meg egy lyuk.” / Mira: „A
     csipkebogyót választottuk. Ma éjjel zokniban fizetünk érte.” / Dani: „Rajtam négy van!”
 - The night line reads `warmth`: ≤ 2 "They sleep in one heap under every coat." / „Egy kupacban
-  alszanak, minden kabát alatt.”; 3 to 5 "The stove ticks. Nobody's toes are warm, but nobody
-  complains." / „A kályha pattog. Senkinek sem meleg a lábujja, de senki sem panaszkodik.”; ≥ 6
+  alszanak, minden kabát alatt.”; 3 to 5 "The lodge creaks in the frost. Nobody's toes are warm,
+  but nobody complains." / „A vadászlak recseg a fagyban. Senkinek sem meleg a lábujja, de senki sem
+  panaszkodik.” (no stove in this line, so it also fits a night with the fire undone); ≥ 6
   "Dani kicks off his blanket in his sleep. The lodge is warm." / „Dani álmában lerúgja a takarót.
   Meleg van a vadászlakban.”
 - **Stitch `cabin_cold` (the "find warmth" scene).** The first time a cabin night ends at `warmth` 0,
@@ -537,6 +549,25 @@ He's looking at it." / „Anya, megkaphatja a kenyérhéjamat? Nagyon nézi.”
   jó dunyhákat!” / Dani: „Szendvics vagyunk. Én vagyok a töltelék!”
 - A floor never blocks: morning always comes and the leave choice is offered as usual.
   `cabin_days` +1 each night.
+- **Order of the night in the ink (#13).** The opening line (`night_cost` on the first night),
+  the meal, the children's line by `hope`, the rose hips exchange (`night.rose_hips`, once, when
+  forage was picked and the patch is undone), patch undone, fire undone, the dog line by `dog`, the
+  night line by `warmth`, then `cabin_days` +1.
+  - Children, `hope` ≤ 2 (quiet, with comfort in the same scene): "The children eat without a
+    word." / Mira: "Tomorrow we make this place ours, one corner at a time." / "Lili leans on her
+    shoulder. Dani holds on to her sleeve." / HU: „A gyerekek szó nélkül esznek.” / Mira: „Holnap
+    belakjuk ezt a helyet, sarokról sarokra.” / „Lili a vállára hajtja a fejét. Dani a ruhaujjába
+    kapaszkodik.” `hope` ≥ 3 (chatty): Dani: "Tomorrow I'm counting every spider in this house." /
+    Lili: "Then you'll be up all week." / HU: Dani: „Holnap megszámolom az összes pókot a házban.” /
+    Lili: „Akkor egész héten fent leszel.”
+  - Dog: "ours": "Patch sleeps across the doorway, his nose on Dani's boot." / „Foltos keresztben
+    alszik az ajtó előtt, orrát Dani csizmáján pihenteti.” "none": "Under the woodshed, the thin dog
+    sighs in his sleep. Dani whispers goodnight to him." / „A fáskamra alatt nagyot sóhajt álmában a
+    sovány kutya. Dani jó éjszakát suttog neki.”
+- **End of part a (#13).** After the first night, `morning` shows one line and the story ends:
+  "Morning comes softly to the lodge. Outside, the snow lies blue and still." / „Csendesen virrad a
+  vadászlakban. Odakint kéken, mozdulatlanul fekszik a hó.” #34 replaces the END with the rest of the
+  morning.
 
 ### 6. The leave choice (mornings after day 2 and day 3)
 
@@ -782,7 +813,13 @@ distance and never attacking anyone, and the camera never follows the horse, the
 - **The lodge (FN4 b).** The cabin is Lark Hill's old hunting lodge. A lark is carved over the door.
   An old estate map on the wall shows the lodge, the valley path and the manor two hours away, which
   is how the family knows where to go, with or without the trunk. In the loft, the guest book's last
-  entry, years old, is in Miss Agnes's own hand. The lodge has no variable of its own.
+  entry, years old, is in Miss Agnes's own hand. The lodge has no variable of its own. What the
+  family can read (#13): the map has no legible name (the lodge with a small lark, the valley path, a
+  big house two hours' walk away, the lettering faded); the guest book's last entry is a short
+  thank-you signed only "A." (HU „Á.”), naming neither Lark Hill, a caretaker nor the family. The
+  family does not know whose lodge it is; the carved lark on the door and on the map is the only
+  link, never stated, and the narration says "the lodge" / „a vadászlak”. Before the gate, "Lark
+  Hill" appears only on Stay's luggage tag, so the name on the gate stays the reveal.
 - **How the memory thread ends (FN1 b).** See Memory: the old life never fully returns; facts from
   outside and fragments from inside meet at the thaw, and `memory` sets how much they know.
 - **The father (owner Q17 c).** There is no father thread. The question is never asked, and nobody
@@ -975,12 +1012,38 @@ force-close restart can be used to try a Normal round again (the owner's choice;
 nothing they did not already have); the line between consequence and blame is a reading judgment
 (narrative-designer writes, requirements-reviewer and code-reviewer read).
 
-## Placeholder story
+## Ink knot map
 
-story/en/main.ink and story/hu/main.ink are the pipeline placeholder (`warmth` starts at 2, `hope` at 1,
-one choice). They are knowingly out of sync with this file's start values (`warmth` 3, `hope` 2) and
-outline. They stay untouched until the first M1 story issue replaces them; the name Mira already
-matches (owner Q2 c, P1).
+story/en/main.ink and story/hu/main.ink hold phase 0 from the crash to the first morning at the
+lodge (#13, part a). One file per language, no INCLUDE; knots, stitches, variables, tags and choice
+order are identical in both, only the text differs. #34 extends this map with the later days, the
+leave choice and the gate.
+
+| Knot or stitch                                        | Beat | What it does                                                                                                                                                                               |
+| ----------------------------------------------------- | ---- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `intro`                                               | 0    | `# scene: wood_road` and `# cutscene: intro_crash` on the first fallback line, then the other four lines                                                                                   |
+| `cart`, `cart.stay`, `cart.explore`                   | 1    | `# scene: cart_camp`, choice P0-1 and its writers; each branch ends on the footpath (`# scene: wood_path`)                                                                                 |
+| `lodge`                                               | 2    | Reads `camp` (midday or dusk), `# scene: cabin`                                                                                                                                            |
+| `day.first`                                           | 3    | `-> slot.menu(camp == "wood") ->`; for Stay a second `-> slot.menu(mg_fire == "" and mg_patch == "") ->`; then `dog_chance`. The pick count is the number of tunnel calls                  |
+| `slot.menu(tasks_only)`                               | 3    | The prompt (the first time through `slot.costs_hint`), then sticky options with explicit conditions: fire and patch while their band is "", the others once each and not when `tasks_only` |
+| `slot.costs_hint`                                     | 3    | The first prompt, with `# tutorial: slot_costs`                                                                                                                                            |
+| `slot.fire`, `slot.patch`                             | 3    | The lead-in (writes nothing); the minigame tag ends its last line                                                                                                                          |
+| `slot.fire_band`, `slot.patch_band`                   | 3    | The band switch with the lodge values, then `slot.band_hint` if not yet visited                                                                                                            |
+| `slot.band_hint`                                      | 3    | "Mira brushes off her hands.", with `# tutorial: band_result`                                                                                                                              |
+| `slot.forage`, `slot.loft`, `slot.rest_play`          | 3    | Their writers, with the scene and pov tags                                                                                                                                                 |
+| `dog_chance`, `dog_chance.share`, `dog_chance.refuse` | 4    | The first dog chance                                                                                                                                                                       |
+| `night`, `night.rose_hips`                            | 5    | The first cabin night, with `# tutorial: night_cost` on its opening line                                                                                                                   |
+| `morning`                                             | 5    | One closing line, then END (#34 continues the morning)                                                                                                                                     |
+| `function change(ref value, amount, top)`             | all  | The only writer of numbers: clamps to 0 to top (10; `memory` 5; `cabin_days` 4)                                                                                                            |
+| `function food_cost()`                                | all  | The food cost rule                                                                                                                                                                         |
+
+Writing rules for these files: numbers change only through `change()`; `mg_fire` and `mg_patch` are
+written only by the game; a visit count is read only as visited or not; no sequences, cycles,
+shuffles, `TURNS()`, `TURNS_SINCE()` or randomness; glue only at the end of a line; the minigame
+tag ends the last lead-in line and the tutorial tags end a plain text line outside any choice or
+conditional; every choice option stands alone (bracketed choice text, spoken choices in quotes,
+menu items as noun phrases); dialogue carries the speaker's name in the text, and `# speaker:` is
+not used.
 
 ## Follow-up issues
 
@@ -1027,3 +1090,6 @@ All answers recorded verbatim on issue #11; rows D19 to D25 in docs/decisions.md
   minigames and choices, leaving the app mid-minigame resumes at the trigger point, cost hints only
   in the tutorial, consequence lines allowed and blame lines not.
 - 2026-11-27: this file written (narrative-designer, #11).
+- 2026-11-27: phase 0 day 1 in ink (#13): "Placeholder story" replaced by the ink knot map; what
+  the family can read at the lodge (the lodge, Memory); the night order, the closing line and the
+  tutorial tag lines in Phase 0.
