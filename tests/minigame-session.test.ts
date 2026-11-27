@@ -224,12 +224,15 @@ describe("AC 7: a failed round restarts", () => {
       modeSource,
       complete,
     });
-    await flush();
     expect(session.state).toBe("running");
-    expect(modeSource.reads).toBe(2);
+    expect(modeSource.reads).toBe(1);
     expect(complete).not.toHaveBeenCalled();
     await flush();
+    expect(modeSource.reads).toBe(2);
+    expect(warn).toHaveBeenCalledTimes(2);
+    expect(complete).toHaveBeenCalledTimes(1);
     expect(complete).toHaveBeenCalledWith("fair");
+    expect(session.state).toBe("done");
   });
   it("a synchronous throw restarts once (play called twice)", async () => {
     const { mod, session } = setup("normal", "fire", stubModule({ throwSyncOn: [0] }));
