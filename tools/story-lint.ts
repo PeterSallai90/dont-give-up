@@ -23,15 +23,17 @@ type Token = { kind: "name" | "word" | "num" | "op"; text: string };
 function tokenize(text: string): Token[] {
   const tokens: Token[] = [];
   const re =
-    /->|<-|&&|\|\||==|!=|>=|<=|[A-Za-z_][A-Za-z0-9_]*(?:\.[A-Za-z_][A-Za-z0-9_]*)*|\d+(?:\.\d+)?|\S/g;
+    /"(?:[^"\\]|\\.)*"|->|<-|&&|\|\||==|!=|>=|<=|[A-Za-z_][A-Za-z0-9_]*(?:\.[A-Za-z_][A-Za-z0-9_]*)*|\d+(?:\.\d+)?|\S/g;
   let divertTarget = false;
   for (const m of text.matchAll(re)) {
     const t = m[0];
+    if (t.startsWith('"')) continue;
     if (t === "->" || t === "<-") {
       divertTarget = true;
       tokens.push({ kind: "op", text: t });
     } else if (/^[A-Za-z_]/.test(t)) {
       if (divertTarget) divertTarget = false;
+      else if (text.slice((m.index ?? 0) + t.length).match(/^\s*\(/)) continue;
       else tokens.push({ kind: "name", text: t });
     } else if (/^\d/.test(t)) tokens.push({ kind: "num", text: t });
     else tokens.push({ kind: "op", text: t });
