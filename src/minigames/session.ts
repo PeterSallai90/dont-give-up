@@ -81,15 +81,25 @@ export function createSession(options: SessionOptions): MinigameSession {
     return t === token && state === "running";
   }
 
+  let started = false;
+
   function startRound(): void {
     token += 1;
     const t = token;
-    roundMode = modeSource.getMode();
     state = "running";
     offeredActions = [];
     readyCalled = false;
     clearTimer();
-    const module = registry.get(id);
+    if (started) changed();
+    started = true;
+    let module: ReturnType<typeof registry.get>;
+    try {
+      roundMode = modeSource.getMode();
+      module = registry.get(id);
+    } catch {
+      fail(t, "throw");
+      return;
+    }
     if (!module) {
       fail(t, "no-module");
       return;
@@ -104,7 +114,7 @@ export function createSession(options: SessionOptions): MinigameSession {
     };
     let promise: Promise<MinigameResult>;
     try {
-      promise = module.play(input, roundMode, ready);
+      promise = Promise.resolve(module.play(input, roundMode, ready));
     } catch {
       fail(t, "throw");
       return;
@@ -152,8 +162,11 @@ export function createSession(options: SessionOptions): MinigameSession {
     offeredActions = [];
     token += 1;
     clearTimer();
-    changed();
-    complete(band);
+    try {
+      complete(band);
+    } finally {
+      changed();
+    }
   }
 
   startRound();
