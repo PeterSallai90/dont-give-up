@@ -53,7 +53,7 @@ export class StoryRunner {
         this.fail(`minigame "${stop.id}" has no ink variable mg_${stop.id}`);
       }
       this.pending = stop.id;
-      const checkpoint = this.story.state.ToJson();
+      const checkpoint = this.snapshot();
       return { lines, choices: [], ended: false, minigame: stop.id, checkpoint };
     }
     const choices = this.story.currentChoices.map((c) => ({ index: c.index, text: c.text }));
@@ -71,8 +71,24 @@ export class StoryRunner {
     if (this.failure) throw this.failure;
     if (this.pending === null) throw new Error("no minigame is pending");
     if (!isBand(band)) throw new Error(`not a band: ${String(band)}`);
+    this.closeLookAhead();
     this.story.variablesState.$(`mg_${this.pending}`, band);
     this.pending = null;
+  }
+
+  /**
+   * Commits the open inkjs look-ahead (left by ContinueSingleStep after a newline), so variable
+   * writes and visit counts are in the state that ToJson writes. Safe at every stop: readLine
+   * resets the output before each line, so no glue crosses a stop.
+   */
+  private closeLookAhead(): void {
+    this.story.DiscardSnapshot();
+  }
+
+  /** The ink state JSON of the current position, including every write made so far. */
+  snapshot(): string {
+    this.closeLookAhead();
+    return this.story.state.ToJson();
   }
 
   /** Restores the ink state saved at a trigger; the runner is unchanged if this throws. */
@@ -85,7 +101,7 @@ export class StoryRunner {
     if (!this.hasMinigameVariable(pending)) {
       throw new Error(`minigame "${pending}" has no ink variable mg_${pending}`);
     }
-    const snapshot = this.story.state.ToJson();
+    const snapshot = this.snapshot();
     try {
       this.story.state.LoadJson(checkpoint);
     } catch (e) {

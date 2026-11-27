@@ -362,3 +362,54 @@ describe("AC 8: checkpoint and restore", () => {
     expect(r.load).toBeUndefined();
   });
 });
+
+describe("snapshot (AC 17 of #16)", () => {
+  const readVar = (json: string, name: string): unknown => {
+    const fresh = runnerFromInk(FIRE);
+    fresh.restore(json, "fire");
+    return fresh.getVariable(name);
+  };
+
+  it("a snapshot taken right after completeMinigame holds the band", () => {
+    const r = runnerFromInk(FIRE);
+    r.next();
+    r.completeMinigame("good");
+    expect(readVar(r.snapshot(), "mg_fire")).toBe("good");
+  });
+
+  it("a variable written behind an open look-ahead survives in the snapshot", () => {
+    const r = runnerFromInk(FIRE);
+    r.next();
+    r.setVariable("mg_patch", "fair");
+    expect(readVar(r.snapshot(), "mg_patch")).toBe("fair");
+  });
+
+  it("a snapshot at the trigger equals the step checkpoint", () => {
+    const r = runnerFromInk(FIRE);
+    const step = r.next();
+    expect(r.snapshot()).toBe(step.checkpoint);
+  });
+
+  it("a snapshot after the band restores with the band kept", () => {
+    const r = runnerFromInk(FIRE);
+    r.next();
+    r.completeMinigame("fair");
+    const snap = r.snapshot();
+    const r2 = runnerFromInk(FIRE);
+    r2.restore(snap, "fire");
+    expect(r2.getVariable("mg_fire")).toBe("fair");
+  });
+
+  it("restore on a runner that has already stepped, then completeMinigame and next, reads the right branch", () => {
+    const r = runnerFromInk(FIRE);
+    const checkpoint = r.next().checkpoint ?? "";
+    r.completeMinigame("poor");
+    r.next();
+    r.restore(checkpoint, "fire");
+    expect(r.getVariable("mg_fire")).toBe("");
+    r.completeMinigame("good");
+    const step = r.next();
+    expect(lines(step)).toContain("The fire roars.");
+    expect(lines(step)).not.toContain("The fire sputters.");
+  });
+});

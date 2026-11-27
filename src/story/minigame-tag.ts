@@ -1,7 +1,7 @@
 export type MinigameTag =
   { kind: "none" } | { kind: "trigger"; id: string } | { kind: "error"; message: string };
 
-const ID_PATTERN = /^[a-z][a-z0-9_]*$/;
+export const ID_PATTERN = /^[a-z][a-z0-9_]*$/;
 
 /** Reads the "minigame: <id>" trigger out of the tags of one line. */
 export function parseMinigameTag(tags: readonly string[]): MinigameTag {
