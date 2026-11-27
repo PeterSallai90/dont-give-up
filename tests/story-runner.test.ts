@@ -43,7 +43,7 @@ She lifts the patch. # minigame: patch
 -> END
 `;
 
-const lines = (s: { lines: { text: string }[] }) => s.lines.map((l) => l.text);
+const lines = (s: { lines: { text: string }[] }): string[] => s.lines.map((l) => l.text);
 
 describe("StoryRunner on the real story", () => {
   it("offers the first choices and changes a variable when one is chosen", () => {
@@ -270,7 +270,7 @@ describe("AC 7: validation and poor", () => {
 });
 
 describe("AC 8: checkpoint and restore", () => {
-  function atTrigger() {
+  function atTrigger(): { r: StoryRunner; checkpoint: string } {
     const r = runnerFromInk(FIRE);
     const step = r.next();
     const checkpoint = step.checkpoint;
