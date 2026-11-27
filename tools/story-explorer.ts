@@ -2,7 +2,7 @@ import { createHash } from "node:crypto";
 import type { Story } from "inkjs";
 import { advance, type Stop, type StoryLine } from "../src/story/advance";
 import { BANDS } from "../src/story/bands";
-import { containerNames, countReadTargets, lastCompiledReads, variableNames } from "./ink";
+import { containerNames, countReadTargets, variableNames } from "./ink";
 
 /** Cap on explored states (segments) per language. */
 export const MAX_PATHS = 20000;
@@ -60,10 +60,7 @@ function canonical(value: Json): string {
  * nothing it cannot (turn counters, seeds, raw thread numbers, old output). Depends on the state
  * layout of inkjs 2.4.0 (pinned); the stateKey tests are the canary.
  */
-export function stateKey(
-  stateJson: string,
-  reads: ReadonlySet<string> = lastCompiledReads(),
-): string {
+export function stateKey(stateJson: string, reads: ReadonlySet<string>): string {
   const state = JSON.parse(stateJson) as Record<string, Json>;
   const ids = new Map<number, number>();
   const id = (n: Json): number => {
@@ -117,8 +114,7 @@ export function stateKey(
   // The visit of an offered choice target (c-N) is left out of the key when the story never reads
   // its count (no "CNT?" on it, which is how a label is compiled): inkjs hides a visited once-only
   // choice, so an offered visited one is sticky. This lets a repeatable menu merge with itself. A
-  // target the story reads, by label, stays in the key. Without "reads", the story compiled last
-  // by tools/ink.ts is used (unit tests); exploreStories passes the reads of its own story.
+  // target the story reads, by label, stays in the key. "reads" comes from countReadTargets(story).
   const offered = new Set<string>();
   for (const flowJson of Object.values((state.flows ?? {}) as Record<string, Json>)) {
     const choices = ((flowJson as Record<string, Json>).currentChoices ?? []) as Record<

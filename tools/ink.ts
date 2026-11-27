@@ -41,24 +41,38 @@ function compilerOptions(
   );
 }
 
-let lastReads: ReadonlySet<string> = new Set();
-
-/** Container paths the story reads a visit count of ("CNT?" in the compiled story). */
-export function countReadTargets(story: Story): Set<string> {
-  const json = story.ToJson() ?? "";
-  return new Set([...json.matchAll(/"CNT\?":"([^"]+)"/g)].map((m) => m[1] as string));
+interface RuntimeNode {
+  content?: RuntimeNode[];
+  namedContent?: Map<string, RuntimeNode>;
+  containerForCount?: { path: { toString(): string } } | null;
+  pathStringForCount?: string | null;
 }
 
-/** Count-read targets of the story compiled last: the default of stateKey in unit tests. */
-export function lastCompiledReads(): ReadonlySet<string> {
-  return lastReads;
+/**
+ * Absolute paths of the containers whose visit count the story reads (the "CNT?" reads, which is
+ * also how a label read compiles). Relative reads are resolved by inkjs against the container
+ * that holds the read, so absolute, same-knot and cross-knot reads all come out as full paths.
+ */
+export function countReadTargets(story: Story): Set<string> {
+  const reads = new Set<string>();
+  const seen = new Set<RuntimeNode>();
+  const walk = (node: RuntimeNode): void => {
+    if (seen.has(node)) return;
+    seen.add(node);
+    if (node.pathStringForCount) {
+      const target = node.containerForCount;
+      if (target) reads.add(target.path.toString());
+    }
+    for (const child of node.content ?? []) walk(child);
+    for (const child of node.namedContent?.values() ?? []) walk(child);
+  };
+  walk(story.mainContentContainer as unknown as RuntimeNode);
+  return reads;
 }
 
 function compile(source: string, options: CompilerOptions, errors: string[]): Story | null {
   try {
-    const story = new Compiler(source, options).Compile();
-    lastReads = countReadTargets(story);
-    return story;
+    return new Compiler(source, options).Compile();
   } catch (err) {
     errors.push(String(err));
     return null;
