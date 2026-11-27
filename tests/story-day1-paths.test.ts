@@ -43,7 +43,7 @@ const TEXT = {
     roof: "roof hole whistles",
     stove: "stove stays cold",
     nightLow: "one heap under every coat",
-    nightMid: "The stove ticks",
+    nightMid: "The lodge creaks in the frost",
     nightHigh: "kicks off his blanket",
     kidsQuiet: "eat without a word",
     kidsChat: "counting every spider",
@@ -63,7 +63,7 @@ const TEXT = {
     roof: "A lyuk a tetőn egész éjjel fütyül",
     stove: "A kályha hideg marad",
     nightLow: "Egy kupacban alszanak",
-    nightMid: "A kályha pattog",
+    nightMid: "A vadászlak recseg a fagyban",
     nightHigh: "lerúgja a takarót",
     kidsQuiet: "szó nélkül esznek",
     kidsChat: "megszámolom az összes pókot",
@@ -73,6 +73,11 @@ const TEXT = {
     refuseOption: "Tartsd meg a kenyérhéjadat, Dani. Ma este nekünk is kell a kenyér.",
   },
 } as const;
+
+const STOVE_BURNING = {
+  en: /stove (ticks|crackles|burns|burning|glows|purrs|catches|is warm)/i,
+  hu: /kályha (pattog|ég|ropog|izzik|dorombol|lángra kap|meleg)/i,
+};
 
 const START: Vars = {
   warmth: 3,
@@ -385,6 +390,8 @@ for (const lang of LANGS) {
         must(exp.mealAtZero, T.barley, "barley");
         must(v.mg_patch === "", T.roof, "patch undone");
         must(v.mg_fire === "", T.stove, "fire undone");
+        if (v.mg_fire === "" && STOVE_BURNING[lang as Lang].test(all))
+          out.push("fire undone but a line says the stove is burning");
         must(exp.rose, T.rose, "rose hips");
         const w = v.warmth as number;
         must(w <= 2, T.nightLow, "night line low");

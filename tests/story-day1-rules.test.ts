@@ -71,13 +71,13 @@ describe("AC 9: change() clamps (the shipped function, cut out of both story fil
           expect(body).not.toBeNull();
           const run = (v: number, amount: number): number => {
             const runner = runnerFromInk(
-              `VAR v = 0\nVAR amount = 0\nVAR top = 0\n~ change(v, amount, top)\n-> END\n${body}`,
+              `VAR a = 0\nVAR b = 0\nVAR t = 0\n~ change(a, b, t)\n-> END\n${body}`,
             );
-            runner.setVariable("v", v);
-            runner.setVariable("amount", amount);
-            runner.setVariable("top", top);
+            runner.setVariable("a", v);
+            runner.setVariable("b", amount);
+            runner.setVariable("t", top);
             runner.next();
-            return runner.getVariable("v") as number;
+            return runner.getVariable("a") as number;
           };
           expect(run(0, -1)).toBe(0);
           expect(run(0, -5)).toBe(0);
