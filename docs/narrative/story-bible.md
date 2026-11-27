@@ -76,6 +76,8 @@ Translation notes (Hungarian):
   family in the formal plural and calls people „kedvesem” as a warm, old-fashioned touch.
 - Adapt jokes and idioms instead of translating them word for word (for example, Dani's drip is
   "Gerald" in English and „Géza” in Hungarian).
+- Lodge furniture (#13): the bench chest is „a padláda” („a padládán”, „a padládában”), the
+  woodbox „a fásláda”, the cart's trunk „az utazóláda”. „Pádláda” is not a word.
 
 ## Characters
 

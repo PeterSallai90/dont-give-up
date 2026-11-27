@@ -71,7 +71,7 @@ Fedél sötétedés előtt. Dani akkorát ujjong, hogy lehull a hó egy ágról.
 - else:
     Az utolsó fénynél nyikorogva kinyílik az ajtó.
 }
-Bent por, hideg kályha, egy lyuk a tetőn, egy fásláda és egy pádláda. # scene: cabin
+Bent por, hideg kályha, egy lyuk a tetőn, egy fásláda és egy padláda. # scene: cabin
 A falon régi térkép lóg: rajta ez a vadászlak egy kis pacsirtával, egy völgybe vezető ösvény és egy nagy ház, nagyjából kétórányi járásra.
 A térképen kifakult a felirat. A nevet senki sem tudja kiolvasni.
 Mira gondolkodás nélkül megnézi a kályhát, a kéményt és a fásládát.
@@ -226,7 +226,7 @@ Beesteledik a vadászlakban. # tutorial: night_cost
 { food == 0:
     Vacsorára híg árpakása a polcon álló bödönből. Épp hogy jóllaknak.
 - else:
-    A pádládán osztják el a vacsorát, lassan, hogy tovább tartson.
+    A padládán osztják el a vacsorát, lassan, hogy tovább tartson.
 }
 ~ food_cost()
 { hope <= 2:
