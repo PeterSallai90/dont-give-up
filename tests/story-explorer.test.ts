@@ -5,7 +5,7 @@ import { advance } from "../src/story/advance";
 import { BANDS } from "../src/story/bands";
 import type { SegmentEvent } from "../tools/story-explorer";
 import { exploreStories, stateKey } from "../tools/story-explorer";
-import { compileSource } from "../tools/ink";
+import { compileSource, countReadTargets } from "../tools/ink";
 
 function story(source: string): Story {
   const { story: s, errors } = compileSource(source);
@@ -410,7 +410,7 @@ describe("stateKey", () => {
       s.ChooseChoiceIndex(c);
       advance(s);
     }
-    return stateKey(s.state.ToJson());
+    return stateKey(s.state.ToJson(), countReadTargets(s));
   }
 
   it("is equal for two passes of the loop menu", () => {
@@ -465,10 +465,10 @@ Rested.
   it("stateKey at the menu differs before and after one rest", () => {
     const s = story(LABELLED);
     advance(s);
-    const before = stateKey(s.state.ToJson());
+    const before = stateKey(s.state.ToJson(), countReadTargets(s));
     s.ChooseChoiceIndex(0);
     advance(s);
-    const after = stateKey(s.state.ToJson());
+    const after = stateKey(s.state.ToJson(), countReadTargets(s));
     expect(after).not.toBe(before);
   });
 
@@ -498,14 +498,42 @@ Bonus end.
   it("stateKey at the menu differs before and after one rest", () => {
     const s = story(LATER);
     advance(s);
-    const before = stateKey(s.state.ToJson());
+    const before = stateKey(s.state.ToJson(), countReadTargets(s));
     s.ChooseChoiceIndex(0);
     advance(s);
-    const after = stateKey(s.state.ToJson());
+    const after = stateKey(s.state.ToJson(), countReadTargets(s));
     expect(after).not.toBe(before);
   });
 
   it("the explorer reaches the bonus knot", () => {
     expect(explore(LATER).problems).toEqual([]);
+  });
+});
+
+describe("a labelled sticky choice read in the same knot", () => {
+  const SAME = `
+VAR mg_fire = ""
+-> menu
+=== menu ===
+- (top)
++ (rested) [Rest] -> top
++ [Leave] -> out
+- (out)
+{rested: -> bonus}
+Plain end.
+-> END
+=== bonus ===
+Bonus end.
+-> END
+`;
+
+  it("stateKey at the menu differs before and after one rest", () => {
+    const s = story(SAME);
+    advance(s);
+    const before = stateKey(s.state.ToJson(), countReadTargets(s));
+    s.ChooseChoiceIndex(0);
+    advance(s);
+    const after = stateKey(s.state.ToJson(), countReadTargets(s));
+    expect(after).not.toBe(before);
   });
 });
