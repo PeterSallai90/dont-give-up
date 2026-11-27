@@ -256,7 +256,7 @@ Evening comes to the lodge. # tutorial: night_cost
 - warmth <= 2:
     They sleep in one heap under every coat.
 - warmth <= 5:
-    The stove ticks. Nobody's toes are warm, but nobody complains.
+    The lodge creaks in the frost. Nobody's toes are warm, but nobody complains.
 - else:
     Dani kicks off his blanket in his sleep. The lodge is warm.
 }

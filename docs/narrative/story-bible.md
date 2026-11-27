@@ -535,8 +535,9 @@ He's looking at it." / „Anya, megkaphatja a kenyérhéjamat? Nagyon nézi.”
     wearing four!" / HU: Lili: „Csipkebogyó vacsorára, a plafon helyén meg egy lyuk.” / Mira: „A
     csipkebogyót választottuk. Ma éjjel zokniban fizetünk érte.” / Dani: „Rajtam négy van!”
 - The night line reads `warmth`: ≤ 2 "They sleep in one heap under every coat." / „Egy kupacban
-  alszanak, minden kabát alatt.”; 3 to 5 "The stove ticks. Nobody's toes are warm, but nobody
-  complains." / „A kályha pattog. Senkinek sem meleg a lábujja, de senki sem panaszkodik.”; ≥ 6
+  alszanak, minden kabát alatt.”; 3 to 5 "The lodge creaks in the frost. Nobody's toes are warm,
+  but nobody complains." / „A vadászlak recseg a fagyban. Senkinek sem meleg a lábujja, de senki sem
+  panaszkodik.” (no stove in this line, so it also fits a night with the fire undone); ≥ 6
   "Dani kicks off his blanket in his sleep. The lodge is warm." / „Dani álmában lerúgja a takarót.
   Meleg van a vadászlakban.”
 - **Stitch `cabin_cold` (the "find warmth" scene).** The first time a cabin night ends at `warmth` 0,

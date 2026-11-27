@@ -257,7 +257,7 @@ Beesteledik a vadászlakban. # tutorial: night_cost
 - warmth <= 2:
     Egy kupacban alszanak, minden kabát alatt.
 - warmth <= 5:
-    A kályha pattog. Senkinek sem meleg a lábujja, de senki sem panaszkodik.
+    A vadászlak recseg a fagyban. Senkinek sem meleg a lábujja, de senki sem panaszkodik.
 - else:
     Dani álmában lerúgja a takarót. Meleg van a vadászlakban.
 }
