@@ -448,3 +448,32 @@ VAR x = false
     ).toBe(true);
   });
 });
+
+describe("a labelled sticky choice whose count the story reads", () => {
+  const LABELLED = `
+VAR mg_fire = ""
+-> menu
+=== menu ===
+{menu.rested: -> bonus}
++ (rested) [Rest] -> menu
++ [Leave] -> END
+=== bonus ===
+Rested.
+-> END
+`;
+
+  it("stateKey at the menu differs before and after one rest", () => {
+    const s = story(LABELLED);
+    advance(s);
+    const before = stateKey(s.state.ToJson());
+    s.ChooseChoiceIndex(0);
+    advance(s);
+    const after = stateKey(s.state.ToJson());
+    expect(after).not.toBe(before);
+  });
+
+  it("the explorer reaches the knot behind the read count", () => {
+    const { problems } = explore(LABELLED);
+    expect(problems).toEqual([]);
+  });
+});
