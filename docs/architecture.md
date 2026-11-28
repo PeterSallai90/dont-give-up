@@ -8,7 +8,8 @@ The living technical description. ADRs in docs/adr record the decisions behind i
 story/<lang>/*.ink        Story content (narrative-designer). Same structure in every language.
 src/story/                Story runner: the only code that talks to inkjs.
 src/game/      (planned)  Game flow: scenes, choices, saves; reads tags from the story.
-src/minigames/              One folder per minigame: logic module + Pixi view; session.ts, types.ts sit directly here.
+src/minigames/            One folder per minigame: logic module + Pixi view; session.ts, types.ts
+                          sit directly here.
 src/ui/        (planned)  Pixi UI components (buttons, text boxes, menus).
 src/i18n/                 UI strings per language (en.json, hu.json) and t().
 src/platform/  (planned)  Saves, haptics, store and other platform services (web / Capacitor).
