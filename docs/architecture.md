@@ -33,7 +33,7 @@ continues the story. A minigame can always be finished; it never blocks progress
 
 A minigame module implements `play(input, mode, ready)` and resolves a `MinigameResult` (M1: the
 band). It calls `ready()` once when it can accept play. A session (src/minigames/session.ts) runs
-the rounds: Normal offers continue, Easy offers retry and continue; there is no skip. A round that
+the rounds: Normal offers continue, Easy offers retry and continue; there is no skip. The session reads the mode once, at the start of its first round, and keeps it for every retry and restart; a mode change applies from the next session (D21). A mode read that throws or is not a valid mode is a failed round. A round that
 cannot run (no module, a throw, no ready within 10 s, an invalid band) is restarted once; after two
 failed rounds in a row the session writes the last band shown in this session, or fair when none
 was shown (D26), with no message. The session calls one completion sink; the game writes the band
