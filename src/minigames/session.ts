@@ -1,3 +1,4 @@
+import { isGameMode } from "../game/mode";
 import { isBand, type Band } from "../story/bands";
 import type {
   GameMode,
@@ -29,7 +30,7 @@ export interface MinigameSession {
   act(action: SessionAction): boolean;
 }
 
-type FailReason = "no-module" | "ready-timeout" | "throw" | "bad-band";
+type FailReason = "no-module" | "ready-timeout" | "throw" | "bad-band" | "bad-mode";
 
 export function createSession(options: SessionOptions): MinigameSession {
   const { id, input, registry, modeSource, complete, onChange } = options;
@@ -38,7 +39,7 @@ export function createSession(options: SessionOptions): MinigameSession {
   let state: SessionState = "running";
   let shownBand: Band | undefined;
   let offeredActions: readonly SessionAction[] = [];
-  let roundMode: GameMode = "normal";
+  let startMode: GameMode | undefined;
   let readyCalled = false;
   let timer: ReturnType<typeof setTimeout> | undefined;
 
@@ -93,8 +94,22 @@ export function createSession(options: SessionOptions): MinigameSession {
     if (started) changed();
     started = true;
     let module: ReturnType<typeof registry.get>;
+    if (startMode === undefined) {
+      let read: unknown;
+      try {
+        read = modeSource.getMode();
+      } catch {
+        fail(t, "bad-mode");
+        return;
+      }
+      if (!isGameMode(read)) {
+        fail(t, "bad-mode");
+        return;
+      }
+      startMode = read;
+    }
+    const mode = startMode;
     try {
-      roundMode = modeSource.getMode();
       module = registry.get(id);
     } catch {
       fail(t, "throw");
@@ -114,7 +129,7 @@ export function createSession(options: SessionOptions): MinigameSession {
     };
     let promise: Promise<MinigameResult>;
     try {
-      promise = Promise.resolve(module.play(input, roundMode, ready));
+      promise = Promise.resolve(module.play(input, mode, ready));
     } catch {
       fail(t, "throw");
       return;
@@ -140,7 +155,7 @@ export function createSession(options: SessionOptions): MinigameSession {
     failures = 0;
     shownBand = band;
     state = "result";
-    offeredActions = roundMode === "easy" ? ["retry", "continue"] : ["continue"];
+    offeredActions = startMode === "easy" ? ["retry", "continue"] : ["continue"];
     changed();
   }
 
