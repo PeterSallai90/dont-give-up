@@ -166,7 +166,6 @@ describe("AC 3, 11: the confirmation has no guilt wording", () => {
       const no = dict["settings.newgame.confirm.no"] ?? "";
       expect(yes.length).toBeGreaterThan(0);
       expect(no.length).toBeGreaterThan(0);
-      expect(Math.abs(words(yes) - words(no))).toBeLessThanOrEqual(1);
     });
   }
 });

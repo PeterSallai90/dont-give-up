@@ -96,7 +96,7 @@ describe("AC 12: confirmed new game", () => {
     const setsBefore = r.storage.calls.filter((c) => c.startsWith("set:")).length;
     await old.saveNow();
     await old.setMode("easy");
-    await old.next();
+    await old.accept("good");
     expect(await storedText(r.storage)).toBeNull();
     expect(r.storage.calls.filter((c) => c.startsWith("set:")).length).toBe(setsBefore);
   });
