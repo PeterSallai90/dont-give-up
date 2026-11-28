@@ -1,0 +1,369 @@
+/*
+ * Theme for the DOM UI layer (ADR 0003): palette, type, and the look of the start screen, mode
+ * cards, buttons, settings button, settings panel and confirmation. Owner: technical-artist.
+ * Colours only from docs/art-style.md (the --pal-* variables); everything else uses the --ui-*
+ * tokens. Functional rules (#ui-root over the canvas, pointer-events, dialog scroll, touch-action)
+ * live in src/ui/ui.css (developer).
+ *
+ * Class names the views use:
+ *   start screen   .start-screen > .start-screen__title (h1), .start-screen__heading (h2),
+ *                  .mode-cards > button.mode-card > .mode-card__name + .mode-card__hint,
+ *                  .start-screen__note (p)
+ *   gear           button.settings-button > svg (src/assets/ui/settings.svg, inline)
+ *   panel          dialog.settings-dialog > .settings-dialog__header > .settings-dialog__title (h2)
+ *                  + button.ui-button.settings-dialog__close;
+ *                  .settings-dialog__section > .settings-dialog__subtitle (h3),
+ *                  .mode-toggle > button.mode-toggle__option[aria-pressed] (x2),
+ *                  .settings-dialog__note (p); button.ui-button (New game)
+ *   confirm        same dialog: .settings-dialog__title, .settings-dialog__body (p),
+ *                  .button-pair > button.ui-button (x2, same class, no modifier)
+ * Equal-weight rule (AC 11, BA Q14): the two mode cards, the two mode options and the two confirm
+ * buttons never get a modifier class, colour, badge or order-based style that ranks one of them.
+ */
+
+:root {
+  /* Palette, docs/art-style.md */
+  --pal-night: #1b1430;
+  --pal-shadow: #2e2347;
+  --pal-paper: #f4e9d8;
+  --pal-warm: #ffd166;
+  --pal-fire: #f77f00;
+  --pal-brick: #d62828;
+  --pal-green: #5fad56;
+  --pal-blue: #4d9de0;
+
+  /* Roles */
+  --ui-bg: var(--pal-night);
+  --ui-surface: var(--pal-shadow);
+  --ui-text: var(--pal-paper);
+  --ui-accent: var(--pal-warm);
+  --ui-lip: var(--pal-fire);
+  --ui-focus: var(--pal-blue);
+  --ui-scrim: rgb(27 20 48 / 80%); /* night at 80 % */
+
+  /* Shape: bold outlines; interactive things get the thicker one (art-style "Shapes and lines") */
+  --ui-line: 2px;
+  --ui-line-interactive: 3px;
+  --ui-lip-size: 4px;
+  --ui-radius: 18px;
+  --ui-radius-small: 12px;
+  --ui-target: 44px; /* minimum touch target, AC 4 */
+  --ui-gap: 16px;
+
+  /* Type: readable first, body at least 16 px; serif display stack for titles only, no font file */
+  --ui-font-title: Georgia, "Times New Roman", "DejaVu Serif", serif;
+  --ui-font-body: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", Arial, sans-serif;
+  --ui-text-body: 1rem;
+  --ui-text-name: 1.375rem;
+
+  /* Motion: bouncy */
+  --ui-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ui-quick: 160ms;
+
+  color-scheme: dark;
+}
+
+/* ---------- Shared text and focus ---------- */
+
+#ui-root {
+  font-family: var(--ui-font-body);
+  font-size: var(--ui-text-body);
+  line-height: 1.4;
+  color: var(--ui-text);
+}
+
+/* :where keeps this reset weaker than the component classes below. */
+:where(#ui-root) :is(h1, h2, h3, p) {
+  margin: 0;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
+#ui-root :is(button, a, [tabindex]):focus-visible {
+  outline: var(--ui-line-interactive) solid var(--ui-focus);
+  outline-offset: 3px;
+}
+
+/* Headings that receive focus on open (tabindex="-1") show no ring, so no button looks chosen. */
+#ui-root [tabindex="-1"]:focus {
+  outline: none;
+}
+
+/* ---------- Buttons: one shared chunky style ---------- */
+
+.ui-button,
+.mode-card,
+.mode-toggle__option {
+  box-sizing: border-box;
+  min-width: var(--ui-target);
+  min-height: var(--ui-target);
+  margin: 0 0 var(--ui-lip-size);
+  padding: 10px 18px;
+  border: var(--ui-line-interactive) solid var(--ui-accent);
+  border-radius: var(--ui-radius-small);
+  background: var(--ui-bg);
+  box-shadow: 0 var(--ui-lip-size) 0 var(--ui-lip);
+  color: var(--ui-text);
+  font: inherit;
+  font-weight: 600;
+  text-align: center;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    transform var(--ui-quick) var(--ui-bounce),
+    box-shadow var(--ui-quick) var(--ui-bounce);
+}
+
+.ui-button:active,
+.mode-card:active,
+.mode-toggle__option:active {
+  transform: translateY(var(--ui-lip-size));
+  box-shadow: 0 0 0 var(--ui-lip);
+}
+
+:is(.ui-button, .mode-card, .mode-toggle__option):disabled {
+  cursor: default;
+  opacity: 0.6;
+  transform: none;
+}
+
+/* ---------- Start screen ---------- */
+
+.start-screen {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+  min-height: 100dvh;
+  margin: 0;
+  /* Content column at most 720 px wide; the night background fills the whole screen. */
+  padding: max(24px, env(safe-area-inset-top))
+    max(16px, env(safe-area-inset-right), calc((100% - 720px) / 2))
+    max(24px, env(safe-area-inset-bottom))
+    max(16px, env(safe-area-inset-left), calc((100% - 720px) / 2));
+  background: var(--ui-bg);
+  text-align: center;
+}
+
+.start-screen__title {
+  font-family: var(--ui-font-title);
+  font-size: clamp(2.25rem, 11vw, 3.5rem);
+  font-weight: 700;
+  line-height: 1.05;
+  color: var(--ui-accent);
+  text-shadow: 0 4px 0 var(--ui-lip);
+}
+
+.start-screen__heading {
+  font-family: var(--ui-font-title);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--ui-text);
+}
+
+.mode-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  grid-auto-rows: 1fr; /* both cards the same size, also when stacked */
+  gap: var(--ui-gap);
+  width: 100%;
+}
+
+.mode-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  padding: 18px 16px;
+  border-width: 4px;
+  border-radius: var(--ui-radius);
+  background: var(--ui-surface);
+}
+
+.mode-card__name {
+  font-family: var(--ui-font-title);
+  font-size: var(--ui-text-name);
+  font-weight: 700;
+  color: var(--ui-accent);
+}
+
+.mode-card__hint {
+  font-size: var(--ui-text-body);
+  font-weight: 400;
+  color: var(--ui-text);
+}
+
+.start-screen__note {
+  max-width: 34rem;
+  font-size: var(--ui-text-body);
+  color: var(--ui-text);
+}
+
+/* ---------- Settings button (gear) ---------- */
+
+.settings-button {
+  box-sizing: border-box;
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  min-width: var(--ui-target);
+  min-height: var(--ui-target);
+  padding: 0;
+  border: var(--ui-line-interactive) solid var(--ui-accent);
+  border-radius: 50%;
+  background: var(--ui-surface);
+  box-shadow: 0 3px 0 var(--ui-lip);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.settings-button svg {
+  display: block;
+  width: 30px;
+  height: 30px;
+  transition: transform 320ms var(--ui-bounce);
+}
+
+.settings-button:hover svg,
+.settings-button:focus-visible svg {
+  transform: rotate(45deg);
+}
+
+.settings-button:active svg {
+  transform: rotate(45deg) scale(0.88);
+}
+
+/* ---------- Settings panel and confirmation ---------- */
+
+.settings-dialog {
+  box-sizing: border-box;
+  width: min(30rem, calc(100vw - 24px));
+  padding: 20px;
+  border: 4px solid var(--ui-accent);
+  border-radius: var(--ui-radius);
+  background: var(--ui-surface);
+  box-shadow: 0 6px 0 var(--ui-lip);
+  color: var(--ui-text);
+}
+
+.settings-dialog::backdrop {
+  background: var(--ui-scrim);
+}
+
+.settings-dialog__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.settings-dialog__title {
+  font-family: var(--ui-font-title);
+  font-size: 1.625rem;
+  font-weight: 700;
+  color: var(--ui-accent);
+}
+
+.settings-dialog__close {
+  flex: none;
+  padding: 8px 14px;
+}
+
+.settings-dialog__section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: var(--ui-line) solid var(--ui-bg);
+}
+
+.settings-dialog__subtitle {
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+
+.settings-dialog__note,
+.settings-dialog__body {
+  font-size: var(--ui-text-body);
+}
+
+.settings-dialog__body {
+  margin: 14px 0 20px;
+}
+
+.settings-dialog .ui-button {
+  width: 100%;
+}
+
+.settings-dialog .settings-dialog__close {
+  width: auto;
+}
+
+/* Mode selector: the marked option is filled and shows a filled dot, so it is not colour alone. */
+.mode-toggle {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.mode-toggle__option {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.mode-toggle__option::before {
+  content: "";
+  box-sizing: border-box;
+  flex: none;
+  width: 16px;
+  height: 16px;
+  border: var(--ui-line-interactive) solid currentColor;
+  border-radius: 50%;
+}
+
+.mode-toggle__option[aria-pressed="true"] {
+  background: var(--ui-accent);
+  color: var(--ui-surface);
+}
+
+.mode-toggle__option[aria-pressed="true"]::before {
+  background: currentColor;
+}
+
+/* Confirmation: two equal buttons, side by side when they fit, stacked on narrow phones. */
+.button-pair {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  gap: 12px;
+}
+
+/* ---------- Reduced motion: no bounce, no spin ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .ui-button,
+  .mode-card,
+  .mode-toggle__option,
+  .settings-button svg {
+    transition: none;
+  }
+
+  .ui-button:active,
+  .mode-card:active,
+  .mode-toggle__option:active {
+    transform: none;
+  }
+
+  .settings-button:hover svg,
+  .settings-button:focus-visible svg,
+  .settings-button:active svg {
+    transform: none;
+  }
+}
