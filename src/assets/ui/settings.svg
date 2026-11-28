@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false">
+  <!-- Settings gear. Palette: warm light #FFD166, fire #F77F00 (outline), deep shadow #2E2347 (hub).
+       Outline technique: the outline group is the same shapes drawn larger in the outline colour,
+       the fill group sits on top, so there is no seam between the teeth and the body.
+       Rotate the whole icon around 12 12 through the "gear" group. -->
+  <defs>
+    <rect id="dgu-gear-tooth" x="9.8" y="2.8" width="4.4" height="6" rx="1" />
+    <g id="dgu-gear-shape">
+      <circle cx="12" cy="12" r="6.8" />
+      <use href="#dgu-gear-tooth" />
+      <use href="#dgu-gear-tooth" transform="rotate(45 12 12)" />
+      <use href="#dgu-gear-tooth" transform="rotate(90 12 12)" />
+      <use href="#dgu-gear-tooth" transform="rotate(135 12 12)" />
+      <use href="#dgu-gear-tooth" transform="rotate(180 12 12)" />
+      <use href="#dgu-gear-tooth" transform="rotate(225 12 12)" />
+      <use href="#dgu-gear-tooth" transform="rotate(270 12 12)" />
+      <use href="#dgu-gear-tooth" transform="rotate(315 12 12)" />
+    </g>
+  </defs>
+  <g id="gear">
+    <g id="gear-outline" fill="#F77F00" stroke="#F77F00" stroke-width="3.6" stroke-linejoin="round">
+      <use href="#dgu-gear-shape" />
+    </g>
+    <g id="gear-fill" fill="#FFD166">
+      <use href="#dgu-gear-shape" />
+    </g>
+    <g id="gear-hub">
+      <circle cx="12" cy="12" r="3.1" fill="#2E2347" stroke="#F77F00" stroke-width="1.8" />
+    </g>
+  </g>
+</svg>
