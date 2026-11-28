@@ -1,12 +1,13 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { GAME_MODES as MODE_GAME_MODES } from "../src/game/mode";
 import { START_TIMEOUT_MS, createSession } from "../src/minigames/session";
-import { GAME_MODES, type GameMode } from "../src/minigames/types";
+import { GAME_MODES, type GameMode, type ModeSource } from "../src/minigames/types";
 import {
   flush,
   stubComplete,
   stubInput,
   stubMode,
+  stubModeScript,
   stubModule,
   stubRegistry,
   type StubModule,
@@ -27,15 +28,20 @@ afterEach(() => {
 
 interface Setup {
   mod: StubModule;
-  mode: ReturnType<typeof stubMode>;
+  mode: ModeSource & { set(mode: GameMode): void; readonly reads: number };
   complete: ReturnType<typeof stubComplete>;
   onChange: ReturnType<typeof vi.fn>;
   session: ReturnType<typeof createSession>;
   input: ReturnType<typeof stubInput>;
 }
 
-function setup(mode: GameMode = "normal", id = "fire", mod: StubModule = stubModule()): Setup {
-  const modeSource = stubMode(mode);
+function setup(
+  mode: GameMode = "normal",
+  id = "fire",
+  mod: StubModule = stubModule(),
+  shared?: Setup["mode"],
+): Setup {
+  const modeSource = shared ?? stubMode(mode);
   const complete = stubComplete();
   const onChange = vi.fn();
   const input = stubInput(id);
@@ -186,30 +192,179 @@ describe("AC 5: no skip", () => {
   });
 });
 
-describe("AC 6: mode is read at every round start", () => {
-  it("reads the mode once per round", async () => {
+describe("#49: the session keeps its start mode", () => {
+  it("AC 1: Easy at start, mode switched to Normal while running: retry and continue are offered", async () => {
     const { mod, mode, session } = setup("easy");
-    expect(mode.reads).toBe(1);
-    await showBand(mod, { band: "fair" });
-    expect(mode.reads).toBe(1);
-    session.act("retry");
-    expect(mode.reads).toBe(2);
-  });
-  it("Normal round, mode switched to Easy mid-round: only continue is offered", async () => {
-    const { mod, mode, session } = setup("normal");
-    mode.set("easy");
+    mode.set("normal");
     await showBand(mod, { band: "good" });
-    expect(session.offeredActions).toEqual(["continue"]);
+    expect(nth(mod, 0).mode).toBe("easy");
+    expect(session.offeredActions).toEqual(["retry", "continue"]);
   });
-  it("Easy band shown, mode switched to Normal: retry is still offered and runs in Normal", async () => {
-    const { mod, mode, session } = setup("easy");
+  it("AC 2: Easy band shown, mode switched to Normal: the retry runs in Easy with the same input and offers retry again", async () => {
+    const { mod, mode, session, input } = setup("easy");
     await showBand(mod, { band: "good" });
     mode.set("normal");
     expect(session.offeredActions).toEqual(["retry", "continue"]);
     expect(session.act("retry")).toBe(true);
-    expect(last(mod).mode).toBe("normal");
+    expect(last(mod).mode).toBe("easy");
+    expect(last(mod).input).toBe(input);
     await showBand(mod, { band: "fair" });
+    expect(session.offeredActions).toEqual(["retry", "continue"]);
+  });
+  it("AC 3: Normal at start, mode switched to Easy mid-round: only continue, retry rejected", async () => {
+    const { mod, mode, session } = setup("normal");
+    mode.set("easy");
+    await showBand(mod, { band: "good" });
+    expect(nth(mod, 0).mode).toBe("normal");
     expect(session.offeredActions).toEqual(["continue"]);
+    expect(session.act("retry")).toBe(false);
+    await flush();
+    expect(mod.calls).toBe(1);
+  });
+  it("AC 3: Normal at start, mode switched to Easy after the band: only continue, retry rejected", async () => {
+    const { mod, mode, session } = setup("normal");
+    await showBand(mod, { band: "poor" });
+    mode.set("easy");
+    expect(session.offeredActions).toEqual(["continue"]);
+    expect(session.act("retry")).toBe(false);
+    await flush();
+    expect(mod.calls).toBe(1);
+    expect(session.state).toBe("result");
+  });
+  it("AC 4: a restart after a rejected round runs in the start mode", async () => {
+    const { mod, mode } = setup("easy");
+    mode.set("normal");
+    await failRound(mod);
+    expect(mod.calls).toBe(2);
+    expect(last(mod).mode).toBe("easy");
+  });
+  it("AC 4: a restart after a synchronous throw runs in the start mode", async () => {
+    const { mod, mode } = setup("easy", "fire", stubModule({ throwSyncOn: [0] }));
+    mode.set("normal");
+    await flush();
+    expect(mod.calls).toBe(2);
+    expect(last(mod).mode).toBe("easy");
+  });
+  it("AC 4: a restart after the ready timeout runs in the start mode", async () => {
+    const { mod, mode } = setup("easy");
+    mode.set("normal");
+    await vi.advanceTimersByTimeAsync(START_TIMEOUT_MS);
+    expect(mod.calls).toBe(2);
+    expect(last(mod).mode).toBe("easy");
+  });
+  it("AC 5: a mode change applies to the next session", async () => {
+    const first = setup("easy");
+    first.mode.set("normal");
+    await showBand(first.mod, { band: "good" });
+    first.session.act("continue");
+    expect(first.mode.reads).toBe(1);
+    const second = setup("normal", "fire", stubModule(), first.mode);
+    expect(first.mode.reads).toBe(2);
+    expect(nth(second.mod, 0).mode).toBe("normal");
+    await showBand(second.mod, { band: "good" });
+    expect(second.session.offeredActions).toEqual(["continue"]);
+  });
+  it("AC 6: a session created after a resume reads the then-current mode and is fresh", async () => {
+    const first = setup("easy");
+    first.mode.set("normal");
+    expect(first.session.state).toBe("running");
+    const second = setup("normal", "fire", stubModule(), first.mode);
+    expect(nth(second.mod, 0).mode).toBe("normal");
+    expect(second.session.state).toBe("running");
+    expect(second.session.shownBand).toBeUndefined();
+    expect(second.session.offeredActions).toEqual([]);
+  });
+  it("AC 7: three Easy retries read the mode once", async () => {
+    const { mod, mode, session } = setup("easy");
+    for (let i = 0; i < 3; i += 1) {
+      await showBand(mod, { band: "fair" });
+      session.act("retry");
+    }
+    expect(mod.calls).toBe(4);
+    expect(mode.reads).toBe(1);
+  });
+  it("AC 7: a failed round, then a band, reads the mode once", async () => {
+    const { mod, mode } = setup("easy");
+    await failRound(mod);
+    await showBand(mod, { band: "good" });
+    expect(mode.reads).toBe(1);
+  });
+  it("AC 7: two failed rounds and the fallback read the mode once", async () => {
+    const { mod, mode, complete } = setup("easy");
+    await failRound(mod);
+    await failRound(mod);
+    expect(complete).toHaveBeenCalledWith("fair");
+    expect(mode.reads).toBe(1);
+  });
+  it("AC 7: an Easy band, then a retry that fails twice, reads the mode once", async () => {
+    const { mod, mode, session, complete } = setup("easy");
+    await showBand(mod, { band: "good" });
+    session.act("retry");
+    await failRound(mod);
+    await failRound(mod);
+    expect(complete).toHaveBeenCalledWith("good");
+    expect(mode.reads).toBe(1);
+  });
+  describe("AC 8: a bad mode read is a failed round", () => {
+    const bad: [string, unknown][] = [
+      ["throws", new Error("settings broke")],
+      ["empty string", ""],
+      ["undefined", undefined],
+      ["unknown value", "hard"],
+    ];
+    function create(
+      modeSource: ModeSource,
+      mod: StubModule,
+    ): { session: ReturnType<typeof createSession>; complete: ReturnType<typeof stubComplete> } {
+      const complete = stubComplete();
+      let session!: ReturnType<typeof createSession>;
+      expect(() => {
+        session = createSession({
+          id: "fire",
+          input: stubInput("fire"),
+          registry: stubRegistry({ fire: mod }),
+          modeSource,
+          complete,
+        });
+      }).not.toThrow();
+      return { session, complete };
+    }
+    it.each(bad)(
+      "%s once: createSession does not throw, the restart reads again and keeps the mode",
+      async (_n, value) => {
+        const mod = stubModule();
+        const modeSource = stubModeScript([value], "easy");
+        const { session } = create(modeSource, mod);
+        expect(mod.calls).toBe(0);
+        await flush();
+        expect(mod.calls).toBe(1);
+        expect(nth(mod, 0).mode).toBe("easy");
+        expect(modeSource.reads).toBe(2);
+        modeSource.set("normal");
+        await showBand(mod, { band: "good" });
+        expect(session.offeredActions).toEqual(["retry", "continue"]);
+        session.act("retry");
+        expect(last(mod).mode).toBe("easy");
+        expect(modeSource.reads).toBe(2);
+      },
+    );
+    it.each(bad)(
+      "%s twice: the fallback fair is written, nothing is offered",
+      async (_n, value) => {
+        const mod = stubModule();
+        const modeSource = stubModeScript([value, value], "easy");
+        const { session, complete } = create(modeSource, mod);
+        await flush();
+        await flush();
+        expect(complete).toHaveBeenCalledTimes(1);
+        expect(complete).toHaveBeenCalledWith("fair");
+        expect(mod.calls).toBe(0);
+        expect(session.state).toBe("done");
+        expect(session.offeredActions).toEqual([]);
+        expect(warn).toHaveBeenCalledTimes(2);
+        expect(vi.getTimerCount()).toBe(0);
+      },
+    );
   });
 });
 
@@ -228,7 +383,7 @@ describe("AC 7: a failed round restarts", () => {
     expect(modeSource.reads).toBe(1);
     expect(complete).not.toHaveBeenCalled();
     await flush();
-    expect(modeSource.reads).toBe(2);
+    expect(modeSource.reads).toBe(1);
     expect(warn).toHaveBeenCalledTimes(2);
     expect(complete).toHaveBeenCalledTimes(1);
     expect(complete).toHaveBeenCalledWith("fair");

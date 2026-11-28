@@ -95,6 +95,39 @@ export function stubMode(initial: GameMode): StubMode {
   };
 }
 
+export interface StubModeScript extends ModeSource {
+  set(mode: GameMode): void;
+  readonly reads: number;
+}
+
+/**
+ * A mode source that follows a script: the n-th getMode() call takes the n-th step (an Error is
+ * thrown, any other value is returned as is, also invalid ones on purpose); after the script it
+ * returns `then`, which set() can change.
+ */
+export function stubModeScript(steps: readonly unknown[], then: GameMode): StubModeScript {
+  let current = then;
+  let reads = 0;
+  return {
+    getMode() {
+      const n = reads;
+      reads += 1;
+      if (n < steps.length) {
+        const step = steps[n];
+        if (step instanceof Error) throw step;
+        return step as GameMode;
+      }
+      return current;
+    },
+    set(next) {
+      current = next;
+    },
+    get reads() {
+      return reads;
+    },
+  };
+}
+
 export function stubComplete(): ReturnType<typeof vi.fn<(band: Band) => void>> {
   return vi.fn<(band: Band) => void>();
 }
