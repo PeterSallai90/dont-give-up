@@ -7,10 +7,12 @@ The living technical description. ADRs in docs/adr record the decisions behind i
 ```
 story/<lang>/*.ink        Story content (narrative-designer). Same structure in every language.
 src/story/                Story runner: the only code that talks to inkjs.
-src/game/      (planned)  Game flow: scenes, choices, saves; reads tags from the story.
+src/game/                 Game flow: boot, saves, mode source, menu state; reads tags from the
+                          story. Plain TypeScript, tested in Node.
 src/minigames/            One folder per minigame: logic module + Pixi view; session.ts, types.ts
                           sit directly here.
-src/ui/        (planned)  Pixi UI components (buttons, text boxes, menus).
+src/ui/                   DOM views for menus and dialogs over the Pixi canvas (ADR 0003); they
+                          render state from src/game and forward input, no game logic.
 src/i18n/                 UI strings per language (en.json, hu.json) and t().
 src/platform/  (planned)  Saves, haptics, store and other platform services (web / Capacitor).
 tools/                    Build and check scripts (story compile, story check, i18n check).
@@ -42,6 +44,13 @@ cannot run (no module, a throw, no ready within 10 s, an invalid band) is restar
 failed rounds in a row the session writes the last band shown in this session, or fair when none
 was shown (D26), with no message. The session calls one completion sink; the game writes the band
 to ink through the story runner.
+
+## UI layer
+
+Menus and dialogs (start screen, settings, confirmations) are DOM elements in `#ui-root` over the
+Pixi canvas (ADR 0003). Their state and actions live in src/game and are tested in Node; the views
+in src/ui only render and forward input. A modal panel blocks input to the canvas and tells the
+game through `onPanelOpen` / `onPanelClose`. Pixi is loaded after the first screen is shown.
 
 ## Languages
 
