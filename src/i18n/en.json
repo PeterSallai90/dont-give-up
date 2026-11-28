@@ -4,5 +4,21 @@
   "menu.start": "Start",
   "menu.language": "Language",
   "story.continue": "Continue",
-  "story.end": "The end of this chapter."
+  "story.end": "The end of this chapter.",
+  "mode.pick.title": "Choose how to play",
+  "mode.pick.note": "Both modes have the same story, with every path open. You can change the mode at any time in Settings.",
+  "mode.easy.name": "Easy",
+  "mode.easy.hint": "Retry each minigame as often as you like. Relaxed timing.",
+  "mode.normal.name": "Normal",
+  "mode.normal.hint": "Play each minigame once, as it comes. Standard timing.",
+  "mode.change.note": "A change applies from the next minigame.",
+  "settings.open": "Settings",
+  "settings.title": "Settings",
+  "settings.close": "Close",
+  "settings.mode.title": "Game mode",
+  "settings.newgame.button": "New game",
+  "settings.newgame.confirm.title": "Start a new game?",
+  "settings.newgame.confirm.body": "Your saved game will be deleted, and you will choose a game mode again.",
+  "settings.newgame.confirm.yes": "Start a new game",
+  "settings.newgame.confirm.no": "Keep playing"
 }

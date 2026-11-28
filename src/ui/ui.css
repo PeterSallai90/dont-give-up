@@ -1,0 +1,51 @@
+/* Functional layout of the DOM UI layer (ADR 0003). Looks live in theme.css. */
+
+#ui-root {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  pointer-events: none;
+}
+
+#ui-root > * {
+  pointer-events: auto;
+}
+
+canvas {
+  position: fixed;
+  inset: 0;
+  display: block;
+}
+
+.start-screen {
+  position: absolute;
+  inset: 0;
+  overflow-y: auto;
+  touch-action: pan-y;
+}
+
+.settings-button {
+  position: fixed;
+  top: max(8px, env(safe-area-inset-top));
+  right: max(8px, env(safe-area-inset-right));
+  min-width: 44px;
+  min-height: 44px;
+}
+
+.settings-button[hidden] {
+  display: none;
+}
+
+.settings-dialog {
+  max-height: calc(100dvh - 16px);
+  max-width: calc(100vw - 16px);
+  overflow-y: auto;
+  touch-action: pan-y;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #ui-root * {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}

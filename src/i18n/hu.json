@@ -4,5 +4,21 @@
   "menu.start": "Kezdés",
   "menu.language": "Nyelv",
   "story.continue": "Tovább",
-  "story.end": "A fejezet véget ért."
+  "story.end": "A fejezet véget ért.",
+  "mode.pick.title": "Válaszd ki, hogyan játszol",
+  "mode.pick.note": "Mindkét módban ugyanaz a történet, és minden út nyitva áll. A módot bármikor átállíthatod a Beállításokban.",
+  "mode.easy.name": "Könnyű",
+  "mode.easy.hint": "Minden minijátékot újrajátszhatsz, ahányszor csak szeretnéd. Kényelmes időzítés.",
+  "mode.normal.name": "Normál",
+  "mode.normal.hint": "Minden minijátékot egyszer játszol, ahogy jön. Szokásos időzítés.",
+  "mode.change.note": "A változás a következő minijátéktól érvényes.",
+  "settings.open": "Beállítások",
+  "settings.title": "Beállítások",
+  "settings.close": "Bezárás",
+  "settings.mode.title": "Játékmód",
+  "settings.newgame.button": "Új játék",
+  "settings.newgame.confirm.title": "Új játékot kezdesz?",
+  "settings.newgame.confirm.body": "A mentett játékod törlődik, és újra választasz játékmódot.",
+  "settings.newgame.confirm.yes": "Új játék indítása",
+  "settings.newgame.confirm.no": "Játék folytatása"
 }
