@@ -83,6 +83,22 @@ describe("storage gate: after revoke", () => {
     expect(await base.get("k")).toBe("kept");
   });
 
+  it("an operation queued before revoke but started after it never reaches the base", async () => {
+    const base = new SlowStorage();
+    const gate = createStorageGate(base);
+    const first = gate.storage.set("k", "in-flight");
+    const queuedSet = gate.storage.set("k", "late");
+    const queuedRemove = gate.storage.remove("k");
+    await tick();
+    expect(base.started).toEqual(["set:k"]);
+    gate.revoke();
+    base.release();
+    await Promise.all([first, queuedSet, queuedRemove]);
+    await tick();
+    expect(base.started).toEqual(["set:k"]);
+    expect(await base.inner.get("k")).toBe("in-flight");
+  });
+
   it("revoke is idempotent", () => {
     const gate = createStorageGate(new MemoryStorage());
     gate.revoke();
